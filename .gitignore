@@ -1,2 +1,4 @@
 /.idea/
 /obscenity_test/
+**/.venv/**
+**/__pycache__/**
