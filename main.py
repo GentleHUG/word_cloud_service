@@ -19,7 +19,8 @@ with open('config.json') as config_file:
 app = FastAPI(title="Word Cloud Generator", description="API для генерации облаков слов из строк.")
 
 
-class StringList(BaseModel):
+class ProcessWordsRequest(BaseModel):
+	enable_trans: bool = False
 	items: List[str]
 
 
@@ -40,33 +41,40 @@ def custom_color_func(word, font_size, position, orientation, random_state=None,
 
 
 # // TODO Нужно реализовать функцию обработки слов)
-def precess_word(string_list: List[str]) -> Dict[str, float]:
+def precess_word(string_list: List[str], enable_trans: bool) -> Dict[str, float]:
 	return {}
 
 
-def extract_words(sentences: List[str]) -> List[str]:
+"""
+Мои функции для тестов, потом из уберемссс
+-----------------------------------------------------------------------
+"""
+def extract_words(string_list: List[str]) -> List[str]:
 	words = []
-	for sentence in sentences:
+	for sentence in string_list:
 		# Удаляем знаки препинания и разбиваем строку на слова
 		words.extend(re.findall(r'\b\w+\b', sentence.lower()))
 	return words
 
 
-def my_process_word_func(string_list: List[str]) -> Dict[str, float]:
+def my_process_word_func(string_list: List[str], enable_trans: bool) -> Dict[str, float]:
 	counter = Counter(extract_words(string_list))
 	max_freq: int = counter.most_common(1)[0][1]
 	return {key: round(value / max_freq, 4) for key, value in counter.items()}
+"""
+-----------------------------------------------------------------------
+"""
 
 
 @app.post("/generate-wordcloud/", summary="Генерация облака слов", response_description="Изображение облака слов")
-async def generate_wordcloud(string_list: StringList):
+async def generate_wordcloud(req: ProcessWordsRequest):
 	width = config['width']
 	height = config['height']
 
 	mask = create_oval_mask(width, height)
 
 	# TODO Здесь должна быть обработка с помощью ML
-	aggregated_words = my_process_word_func(string_list=string_list.items)
+	aggregated_words = my_process_word_func(req.items, req.enable_trans)
 
 	wordcloud = WordCloud(
 		width=width,
@@ -93,8 +101,8 @@ async def generate_wordcloud(string_list: StringList):
 
 
 @app.post("/aggregate-words/", summary="Агрегация слов с их ценностью", response_description="Список сгенерированных слов с их ценностью")
-async def aggregate_words(string_list: StringList):
-	return {"aggregated_words": my_process_word_func(string_list.items)}
+async def aggregate_words(req: ProcessWordsRequest):
+	return {"aggregated_words": my_process_word_func(req.items)}
 
 
 if __name__ == "__main__":
