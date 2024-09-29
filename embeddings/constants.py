@@ -1,7 +1,5 @@
 from pathlib import Path
 from typing import Dict
-import fasttext
-from sentence_transformers import SentenceTransformer
 
 # TODO: Надо поменять путь. 7 Гб мы никуда нормально не закинем, надо указать официальную ссылку на скачиание.
 FASTTEXT_MODEL_PATH: Path = Path("/Users/fffgson/Desktop/Coding/nuclearhack2024_local")
