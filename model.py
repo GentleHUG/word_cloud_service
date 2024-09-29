@@ -1,3 +1,5 @@
+import numpy as np
+
 """ Модель кластеризации:
 input: list[str] - очищенные данные
 output: dict{str : double} - словарь с весами слов,

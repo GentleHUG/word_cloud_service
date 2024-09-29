@@ -3,7 +3,7 @@ import spacy
 import re
 import pymorphy3 as pm
 from pymystem3 import Mystem
-from ruwordnet import RuWordNet
+# from ruwordnet import RuWordNet
 # ruwordnet download
 from pyaspeller import YandexSpeller
 from googletrans import Translator
@@ -36,9 +36,9 @@ def translate(word):
 
 
 def preprocess(text, enable_trans=False):
-    ru_bwords = read_file_as_set('/ru_words.txt')
-    en_bwords = read_file_as_set('/en_words.txt')
-    wn = RuWordNet()
+    ru_bwords = read_file_as_set('ru_words.txt')
+    en_bwords = read_file_as_set('en_words.txt')
+    # wn = RuWordNet()
     # ru_morph = pm.MorphAnalyzer(lang='ru')
     ru_morph = Mystem()
     en_morph = spacy.load('en_core_web_sm')
@@ -59,6 +59,6 @@ def preprocess(text, enable_trans=False):
     
     return en_lemmas + ru_lemmas
 
-texts = "Test текст"
+texts = "Test тексты"
 print(preprocess(texts))
 
