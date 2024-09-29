@@ -11,6 +11,8 @@ from pathlib import Path
 from wordcloud import WordCloud
 import matplotlib.pyplot as plt
 
+TOKENIZERS_PARALLELISM = False
+
 
 class WordClusterizer:
     """
@@ -73,16 +75,16 @@ class WordClusterizer:
 
         # Автоматический выбор количества кластеров и компонентов для UMAP
         if num_clusters == "auto":
-            num_clusters = max(1, int(np.log2(num_words)))
+            num_clusters = max(2, int(np.log(num_words)))
         if num_components == "auto":
-            num_components = max(1, int(np.log10(num_words)))
+            num_components = max(2, int(np.log(num_words)))
 
         # Уменьшение размерности с помощью UMAP
-        umap_model = UMAP(n_components=num_components, random_state=random_state)
+        umap_model = UMAP(n_components=num_components, n_jobs=-1)
         reduced_embeddings = umap_model.fit_transform(embeddings)
 
         # Кластеризация с помощью KMeans
-        kmeans_model = KMeans(n_clusters=num_clusters, random_state=random_state)
+        kmeans_model = KMeans(n_clusters=num_clusters)
         labels = kmeans_model.fit_predict(reduced_embeddings)
 
         # Объединение эмбеддингов, лейлов и слов
@@ -94,13 +96,18 @@ class WordClusterizer:
         cluster_counts = Counter(labels)
         top_clusters = cluster_counts.most_common(max(1, len(cluster_counts) // 2))
 
+        # Общее количество элементов в топ-кластерах
+        total_elements = sum(count for _, count in top_clusters)
+
         # Получение слов из самых больших кластеров
         top_words = []
-        for cluster_id, _ in top_clusters:
-            top_words.extend(together[together[:, 0] == cluster_id][:, 1])
+        weights = {}
+        for cluster_id, count in top_clusters:
+            top_words.extend(together[together[:, 0] == str(cluster_id)][:, 1])
+            weights[cluster_id] = count / total_elements if total_elements > 0 else 0
 
-        return np.array(top_words)
-    
+        return np.array(top_words), weights
+
 
 def generate_word_cloud(words: Union[list, np.ndarray]):
     """
@@ -109,26 +116,123 @@ def generate_word_cloud(words: Union[list, np.ndarray]):
     :param words: Список слов для генерации облака слов.
     """
     # Объединяем список слов в одну строку
-    text = ' '.join(words)
+    text = " ".join(words)
 
     # Создаем облако слов
-    wordcloud = WordCloud(width=800, height=400, background_color='white').generate(text)
+    wordcloud = WordCloud(width=800, height=400, background_color="white").generate(
+        text
+    )
 
     # Отображаем облако слов
     plt.figure(figsize=(10, 5))
-    plt.imshow(wordcloud, interpolation='bilinear')
-    plt.axis('off')  # Отключаем оси
+    plt.imshow(wordcloud, interpolation="bilinear")
+    plt.axis("off")  # Отключаем оси
     plt.show()
 
 
 # Пример использования
 if __name__ == "__main__":
-    words = pd.read_csv(
-        "/Users/fffgson/Desktop/Coding/nuclearhack2024_local/words.csv", sep=";"
-    )["response"].to_numpy()
+    # words = pd.read_csv(
+    #     "/Users/fffgson/Desktop/Coding/nuclearhack2024_local/words.csv", sep=";"
+    # )["response"].to_numpy()
+
+    words = np.array(
+        [
+            "карьера",
+            "офис",
+            "коллега",
+            "проект",
+            "задача",
+            "дедлайн",
+            "встреча",
+            "отчет",
+            "команда",
+            "навыки",
+            "работодатель",
+            "сотрудник",
+            "должность",
+            "обязанности",
+            "профессионал",
+            "развитие",
+            "тренинг",
+            "стратегия",
+            "успех",
+            "резюме",
+            "интервью",
+            "заработная плата",
+            "бонус",
+            "премия",
+            "отпуск",
+            "график",
+            "дистанционная работа",
+            "производительность",
+            "мотивация",
+            "лидерство",
+            "коммуникация",
+            "конференция",
+            "собрание",
+            "план",
+            "анализ",
+            "исследование",
+            "клиент",
+            "партнер",
+            "сервис",
+            "продвижение",
+            "обучение",
+            "опыт",
+            "достижения",
+            "цели",
+            "стресс",
+            "баланс",
+            "возможности",
+            "инновации",
+            "технологии",
+            "система",
+            "управление",
+            "ответственность",
+            "планирование",
+            "сроки",
+            "производство",
+            "согласование",
+            "документация",
+            "проверка",
+            "обсуждение",
+            "идеи",
+            "конкуренция",
+            "рынок",
+            "стратегия",
+            "разработка",
+            "презентация",
+            "анализ",
+            "отзывы",
+            "обратная связь",
+            "партнерство",
+            "сеть",
+            "доступность",
+            "профессионализм",
+            "соблюдение",
+            "стандарты",
+            "производительность",
+            "проектирование",
+            "креативность",
+            "инструменты",
+            "ресурсы",
+            "поддержка",
+            "система",
+            "план",
+            "доклад",
+            "проверка",
+            "согласование",
+            "поток",
+            "производительность",
+            "потенциал",
+            "разнообразие",
+            "возможности",
+        ]
+    )
     clusterizer = WordClusterizer(model="rubert")
-    top_words = clusterizer.cluster_words(words, num_clusters="auto")
+    top_words, weights = clusterizer.cluster_words(words, num_clusters="auto")
     print("Слова из самых больших кластеров:", top_words)
+    print(weights)
 
     # generate_word_cloud(top_words)
-    
