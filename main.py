@@ -32,7 +32,7 @@ def create_oval_mask(width, height):
 
 
 def custom_color_func(word, font_size, position, orientation, random_state=None, **kwargs):
-	colormap = cm.get_cmap('plasma')
+	colormap = cm.get_cmap('copper')
 	rgba_color = colormap(random.random())
 	rgb_color = tuple(int(255 * c) for c in rgba_color[:3])
 
