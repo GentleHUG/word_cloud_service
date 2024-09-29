@@ -5,8 +5,3 @@ from typing import Dict
 FASTTEXT_MODEL_PATH: Path = Path("/Users/fffgson/Desktop/Coding/nuclearhack2024_local")
 TEST_WORDS_PATH: Path = Path("/Users/fffgson/Desktop/Coding/nuclearhack2024_local")
 RUBERT_MODEL_PATH: str = "cointegrated/rubert-tiny2"
-
-MODELS_DICT: Dict[str,] = {
-    "fasttext" : fasttext.load_model('cc.ru.300.bin'),
-    "rubert": SentenceTransformer('cointegrated/rubert-tiny2'),
-}
