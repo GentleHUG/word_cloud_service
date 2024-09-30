@@ -1,15 +1,20 @@
 import numpy as np
-from typing import List, Union
+from typing import Union
 from umap import UMAP
-from sklearn.cluster import KMeans, HDBSCAN
+from sklearn.cluster import HDBSCAN
 from sentence_transformers import SentenceTransformer
 from collections import Counter
-import os
-from pathlib import Path
-from wordcloud import WordCloud
-import matplotlib.pyplot as plt
+from topwords_type import Topwords
+import logging
 
-TOKENIZERS_PARALLELISM = False
+mts_values = [
+    "партнерство",
+    "результативность",
+    "ответственность",
+    "смелость",
+    "творчество",
+    "открытость",
+]
 
 
 class WordClusterizer:
@@ -17,50 +22,29 @@ class WordClusterizer:
     Класс для получения эмбеддингов слов, уменьшения размерности и кластеризации.
     """
 
-    def __init__(self, model: str = "rubert", random_state: int = 42):
+    def __init__(self, random_state: int = 52):
         """
         Инициализация класса.
 
-        :param model: Название модели для получения эмбеддингов ('rubert' или 'fasttext').
         :param random_state: Случайное состояние для воспроизводимости.
         """
-        assert model.lower().strip() in [
-            "rubert",
-            "fasttext",
-        ], "Model should be 'rubert' or 'fasttext'."
-        self.model_name = model.lower().strip()
 
-        # Проверка наличия файла модели FastText
-        # if self.model_name == "fasttext":
-        #     model_path = Path(os.path.abspath(__file__)) / "cc.ru.300.bin"
-        #     if not os.path.isfile(model_path):
-        #         raise FileNotFoundError(
-        #             f"File '{model_path}' bot found in the project folder."
-        #         )
-        #     self.model = fasttext.load_model(model_path)
-        # else:
         self.model = SentenceTransformer("cointegrated/rubert-tiny2")
 
-    def get_embeddings(self, word_list: np.ndarray) -> np.ndarray:
+    def _get_embeddings(self, word_list: np.ndarray) -> np.ndarray:
         """
         Получение эмбеддингов для списка слов.
 
         :param word_list: Numpy массив слов.
         :return: Numpy массив эмбеддингов.
         """
-        assert len(word_list) > 0, "Word list should have at least 1 word."
-        if self.model_name == "rubert":
-            return self.model.encode(word_list)
-        else:
-            return np.array([self.model.get_word_vector(word) for word in word_list])
 
-    def cluster_words(
+        assert len(word_list) > 0, "Word list should have at least 1 word."
+        return self.model.encode(word_list)
+
+    def _cluster_words(
         self,
         word_list: np.ndarray,
-        num_top_clusters: Union[int, str] = "auto",
-        min_cluster_size: Union[int, str] = "auto",
-        num_components: Union[int, str] = "auto",
-        random_state: int = 52,
     ) -> np.ndarray:
         """
         Кластеризация слов на основе их эмбеддингов.
@@ -68,88 +52,133 @@ class WordClusterizer:
         :param word_list: Numpy массив слов.
         :param num_clusters: Количество кластеров (int) или 'auto' для автоматического выбора.
         :return: Numpy массив слов из самых больших кластеров.
+
         """
-        embeddings = self.get_embeddings(word_list)
-        num_words = len(word_list)
-        print(num_words)
+        self.num_words = len(word_list)
 
-        # Автоматический выбор количества кластеров и компонентов для UMAP
-        # if num_clusters == "auto":
-        #     num_clusters = max(2, int(np.log(num_words)))
-        if num_components == "auto":
-            num_components = max(2, int(np.log(num_words)))
+        assert (
+            self.num_words > 0
+        ), "Assertion error: Number of words should be more than one."
 
-        # TODO на подумать
-        if min_cluster_size == "auto":
-            min_cluster_size = 7
-        else:
-            min_cluster_size = min_cluster_size
+        self.word_list = word_list
+
+        self.embeddings = self._get_embeddings(self.word_list)
 
         # Уменьшение размерности с помощью UMAP
-        umap_model = UMAP(n_components=num_components, n_jobs=-1)
-        reduced_embeddings = umap_model.fit_transform(embeddings)
+        self.umap_model = UMAP(n_components=max(2, int(np.log(self.num_words))))
 
-        # Кластеризация с помощью KMeans
-        # kmeans_model = KMeans(n_clusters=num_clusters)
-        # labels = kmeans_model.fit_predict(reduced_embeddings)
+        return self.umap_model.fit_transform(self.embeddings)
+
+    def _get_top_words(
+        self,
+        reduced_embeddings: np.ndarray,
+        num_top_words: Union[int, str] = "auto",
+    ):
+        """
+        _summary_
+
+        :return: _description_
+        :rtype: _type_
+        """
+
+        if self.num_words < 7:
+            self.min_cluster_size = self.num_words
+        else:
+            self.min_cluster_size = max(7, int(np.log(self.num_words)))
 
         # Кластеризация с помощью HDBSCAN
-        hdbscan_model = HDBSCAN(min_cluster_size=min_cluster_size)
-        labels = hdbscan_model.fit_predict(reduced_embeddings)        
+        hdbscan_model = HDBSCAN(min_cluster_size=self.min_cluster_size)
+        self.labels = hdbscan_model.fit_predict(reduced_embeddings)
 
-        # Объединение эмбеддингов, лейлов и слов
+        # Объединение эмбеддингов, лейблов и слов
         together = np.concatenate(
-            (labels.reshape(-1, 1), word_list.reshape(-1, 1)), axis=1
+            (self.labels.reshape(-1, 1), self.word_list.reshape(-1, 1)), axis=1
         )
-        # filter -1 labels
-        together = together[together[:, 0] != '-1']
-        
+
+        # Отбрасываем -1 (см. докуементацию)
+        self.together = together[together[:, 0] != "-1"]
+
         # Подсчет количества вхождений в каждый кластер
         cluster_counts = Counter(together[:, 0])
 
-        if num_top_clusters == "auto":
-            top_clusters = cluster_counts.most_common(max(1, len(cluster_counts) // 2))
-        else:
-            top_clusters = cluster_counts.most_common(max(1, num_top_clusters))
-        
+        top_clusters = cluster_counts.most_common(max(1, len(cluster_counts) // 2))
+
         # Общее количество элементов в топ-кластерах
         total_elements = sum(count for _, count in top_clusters)
 
         # Получение слов из самых больших кластеров
-        top_words = []
+        top_clusters_words = []
         weights = {}
         for cluster_id, count in top_clusters:
-            top_words.extend(together[together[:, 0] == str(cluster_id)][:, 1])
-            weights[cluster_id] = count / total_elements if total_elements > 0 else 0
+            top_clusters_words.extend(together[together[:, 0] == str(cluster_id)][:, 1])
+            weights[int(cluster_id)] = (
+                count / total_elements if total_elements > 0 else 0
+            )
+
+        word_counts = Counter(top_clusters_words)
+
+        if num_top_words == "auto":
+            self.num_top_words = max(1, len(word_counts) // 2)
+        else:
+            if num_top_words > self.num_words:
+                self.num_top_words = self.num_words
+            else:
+                self.num_top_words = num_top_words
+
+        _top_words = word_counts.most_common(max(1, self.num_top_words))
+
+        top_words = []
+        for word, _ in _top_words:
+            top_words.append(word)
+
+        self.weights = weights
+        self.top_words = np.array(top_words)
 
         return np.array(top_words), weights
 
+    def _cosine_distance(self, a, b):
+        return 1 - np.dot(a, b) / (np.linalg.norm(a) * np.linalg.norm(b))
 
-def generate_word_cloud(words: Union[list, np.ndarray]):
-    """
-    Генерирует облако слов из списка слов и отображает его.
+    def _get_cosines(self, top_words: np.ndarray) -> np.ndarray:
+        global mts_values
 
-    :param words: Список слов для генерации облака слов.
-    """
-    # Объединяем список слов в одну строку
-    text = " ".join(words)
+        top_words_embds = self._get_embeddings(top_words)
+        mts_values_embds = self._get_embeddings(mts_values)
 
-    # Создаем облако слов
-    wordcloud = WordCloud(width=800, height=400, background_color="white").generate(
-        text
-    )
+        reduced_twe = self.umap_model.transform(top_words_embds)
+        reduced_mve = self.umap_model.transform(mts_values_embds)
 
-    # Отображаем облако слов
-    plt.figure(figsize=(10, 5))
-    plt.imshow(wordcloud, interpolation="bilinear")
-    plt.axis("off")  # Отключаем оси
-    plt.show()
+        # Список для хранения косинусных расстояний
+        distances = []
+
+        # Проходим по каждому вектору из reduced_mve
+        for vec_mve in reduced_mve:
+            # Проходим по каждому вектору из reduced_twe
+            for vec_twe in reduced_twe:
+                distance = self._cosine_distance(vec_mve, vec_twe)
+                distances.append(distance)
+
+        # Усредняем косинусные расстояния
+        average_distance = np.mean(distances)
+        return np.array(average_distance)
+
+    def forward(
+        self, words: np.ndarray, num_top_words: Union[int, str] = "auto"
+    ) -> Topwords:
+        clustered_words = self._cluster_words(words)
+        top_words, weights = self._get_top_words(
+            clustered_words, num_top_words=num_top_words
+        )
+        cosines = self._get_cosines(top_words)
+        return Topwords(
+            words_list=top_words.astype(np.str_),
+            weights=weights,
+            cosines=cosines,
+        )
 
 
-# Пример использования
-def get_top_words(words: np.ndarray):
-    clusterizer = WordClusterizer(model="rubert")
-    top_words, weights = clusterizer.cluster_words(words)
-    print("Слова из самых больших кластеров:", top_words)
-    print(weights)
-    return top_words
+# Вызваем алгоритм
+def get_top_words(words: np.ndarray, num_top_words: Union[int, str] = "auto"):
+    model = WordClusterizer()
+    result = model.forward(words)
+    return result
