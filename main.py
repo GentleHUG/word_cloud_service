@@ -14,6 +14,9 @@ from PIL import Image, ImageDraw
 from collections import Counter
 import re
 
+from data_clean import preprocess
+from embeddings.model import get_top_words
+
 with open('config.json') as config_file:
 	config = json.load(config_file)
 
@@ -62,8 +65,10 @@ def custom_color_func(word, font_size, position, orientation, random_state=None,
 
 
 # // TODO Нужно реализовать функцию обработки слов)
-def precess_word(string_list: List[str], enable_trans: bool) -> Dict[str, float]:
-	return {}
+def precess_words(string_list: List[str], enable_trans: bool) -> Dict[str, float]:
+	cleaned_words = preprocess(' '.join(string_list), enable_trans)
+	top_words = get_top_words(cleaned_words)
+	return top_words
 
 
 """
@@ -106,7 +111,7 @@ async def generate_wordcloud(req: ProcessWordsRequest):
 	mask = create_egg_mask(width, height, egg_size)
 
 	# TODO Здесь должна быть обработка с помощью ML
-	aggregated_words = my_process_word_func(req.items, req.enable_trans)
+	aggregated_words = precess_words(req.items, req.enable_trans)
 
 	wordcloud = WordCloud(
 		width=width,

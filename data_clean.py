@@ -1,3 +1,4 @@
+import numpy as np
 import spacy
 # spacy download en_core_web_sm
 import re
@@ -56,9 +57,5 @@ def preprocess(text, enable_trans=False):
     ru_text = re.sub(r'[^А-Яа-я ]+', ' ', text)
     if ru_text:
         ru_lemmas = [lemma.strip() for lemma in ru_morph.lemmatize(ru_text) if lemma.strip() and lemma.strip() not in ru_bwords]
-    
-    return en_lemmas + ru_lemmas
 
-texts = "Test тексты"
-print(preprocess(texts))
-
+    return np.array(en_lemmas + ru_lemmas)
