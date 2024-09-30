@@ -65,9 +65,10 @@ def custom_color_func(word, font_size, position, orientation, random_state=None,
 
 
 # // TODO Нужно реализовать функцию обработки слов)
-def precess_words(string_list: List[str], enable_trans: bool) -> Dict[str, float]:
+def precess_words(string_list: List[str], enable_trans: bool):
 	cleaned_words = preprocess(' '.join(string_list), enable_trans)
 	top_words = get_top_words(cleaned_words)
+	print("hello")
 	return top_words
 
 
@@ -86,7 +87,8 @@ def extract_words(string_list: List[str]) -> List[str]:
 
 
 def my_process_word_func(string_list: List[str], enable_trans: bool) -> Dict[str, float]:
-	counter = Counter(extract_words(string_list))
+	print(precess_words(string_list, enable_trans))
+	counter = Counter(list(precess_words(string_list, enable_trans)))
 	max_freq: int = counter.most_common(1)[0][1]
 	return {key: round(value / max_freq, 4) for key, value in counter.items()}
 

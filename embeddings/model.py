@@ -3,10 +3,8 @@ from typing import List, Union
 from umap import UMAP
 from sklearn.cluster import KMeans, HDBSCAN
 from sentence_transformers import SentenceTransformer
-import fasttext
 from collections import Counter
 import os
-import pandas as pd
 from pathlib import Path
 from wordcloud import WordCloud
 import matplotlib.pyplot as plt
@@ -33,15 +31,15 @@ class WordClusterizer:
         self.model_name = model.lower().strip()
 
         # Проверка наличия файла модели FastText
-        if self.model_name == "fasttext":
-            model_path = Path(os.path.abspath(__file__)) / "cc.ru.300.bin"
-            if not os.path.isfile(model_path):
-                raise FileNotFoundError(
-                    f"File '{model_path}' bot found in the project folder."
-                )
-            self.model = fasttext.load_model(model_path)
-        else:
-            self.model = SentenceTransformer("cointegrated/rubert-tiny2")
+        # if self.model_name == "fasttext":
+        #     model_path = Path(os.path.abspath(__file__)) / "cc.ru.300.bin"
+        #     if not os.path.isfile(model_path):
+        #         raise FileNotFoundError(
+        #             f"File '{model_path}' bot found in the project folder."
+        #         )
+        #     self.model = fasttext.load_model(model_path)
+        # else:
+        self.model = SentenceTransformer("cointegrated/rubert-tiny2")
 
     def get_embeddings(self, word_list: np.ndarray) -> np.ndarray:
         """
