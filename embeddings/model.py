@@ -1,7 +1,7 @@
 import numpy as np
 from typing import List, Union
 from umap import UMAP
-from sklearn.cluster import KMeans
+from sklearn.cluster import KMeans, HDBSCAN
 from sentence_transformers import SentenceTransformer
 import fasttext
 from collections import Counter
@@ -59,7 +59,8 @@ class WordClusterizer:
     def cluster_words(
         self,
         word_list: np.ndarray,
-        num_clusters: Union[int, str] = "auto",
+        num_top_clusters: Union[int, str] = "auto",
+        min_cluster_size: Union[int, str] = "auto",
         num_components: Union[int, str] = "auto",
         random_state: int = 52,
     ) -> np.ndarray:
@@ -72,30 +73,47 @@ class WordClusterizer:
         """
         embeddings = self.get_embeddings(word_list)
         num_words = len(word_list)
+        print(num_words)
 
         # Автоматический выбор количества кластеров и компонентов для UMAP
-        if num_clusters == "auto":
-            num_clusters = max(2, int(np.log(num_words)))
+        # if num_clusters == "auto":
+        #     num_clusters = max(2, int(np.log(num_words)))
         if num_components == "auto":
             num_components = max(2, int(np.log(num_words)))
+
+        # TODO на подумать
+        if min_cluster_size == "auto":
+            min_cluster_size = 7
+        else:
+            min_cluster_size = min_cluster_size
 
         # Уменьшение размерности с помощью UMAP
         umap_model = UMAP(n_components=num_components, n_jobs=-1)
         reduced_embeddings = umap_model.fit_transform(embeddings)
 
         # Кластеризация с помощью KMeans
-        kmeans_model = KMeans(n_clusters=num_clusters)
-        labels = kmeans_model.fit_predict(reduced_embeddings)
+        # kmeans_model = KMeans(n_clusters=num_clusters)
+        # labels = kmeans_model.fit_predict(reduced_embeddings)
+
+        # Кластеризация с помощью HDBSCAN
+        hdbscan_model = HDBSCAN(min_cluster_size=min_cluster_size)
+        labels = hdbscan_model.fit_predict(reduced_embeddings)        
 
         # Объединение эмбеддингов, лейлов и слов
         together = np.concatenate(
             (labels.reshape(-1, 1), word_list.reshape(-1, 1)), axis=1
         )
-
+        # filter -1 labels
+        together = together[together[:, 0] != '-1']
+        
         # Подсчет количества вхождений в каждый кластер
-        cluster_counts = Counter(labels)
-        top_clusters = cluster_counts.most_common(max(1, len(cluster_counts) // 2))
+        cluster_counts = Counter(together[:, 0])
 
+        if num_top_clusters == "auto":
+            top_clusters = cluster_counts.most_common(max(1, len(cluster_counts) // 2))
+        else:
+            top_clusters = cluster_counts.most_common(max(1, num_top_clusters))
+        
         # Общее количество элементов в топ-кластерах
         total_elements = sum(count for _, count in top_clusters)
 
@@ -231,7 +249,7 @@ if __name__ == "__main__":
         ]
     )
     clusterizer = WordClusterizer(model="rubert")
-    top_words, weights = clusterizer.cluster_words(words, num_clusters="auto")
+    top_words, weights = clusterizer.cluster_words(words)
     print("Слова из самых больших кластеров:", top_words)
     print(weights)
 
