@@ -3,14 +3,14 @@ import re
 import pymorphy3 as pm
 # !pip install -U pymorphy3-dicts-ru
 from pymystem3 import Mystem
-from ruwordnet import RuWordNet
+# from ruwordnet import RuWordNet
 from pyaspeller import YandexSpeller
 from googletrans import Translator
 import spacy
 import numpy as np
 from typing import List
 import os
-!pip install joblib
+# !pip install joblib
 from joblib import Parallel, delayed
 
 def read_file_as_set(file_path: str) -> set:
@@ -97,7 +97,11 @@ def clean_answer(text: str, ru_bwords: set, en_bwords: set, ru_morph, en_morph, 
             if norma.word not in ru_bwords:
                 pos, case, genger, number = p.tag.POS, p.tag.case, p.tag.gender, p.tag.number
                 if (case, number) == ('gent', 'sing') and pos == 'NOUN':
-                    ru_text[ind] = norma.inflect({'plur', 'nomn'}).word
+                    print(item)
+                    try:
+                        ru_text[ind] = norma.inflect({'plur', 'nomn'}).word
+                    except AttributeError:
+                        ru_text[ind] = item
                 elif pos == 'NOUN':
                     if (number) == ('plur'):
                         ru_text[ind] = norma.inflect({'plur', 'nomn'}).word
@@ -126,15 +130,14 @@ def clean_answer(text: str, ru_bwords: set, en_bwords: set, ru_morph, en_morph, 
                 ru_text[ind] = ''
 
     ru_text = re.sub(r'\s+', ' ', " ".join(ru_text))
-    print(ru_text)
     clean_answer = " ".join([ru_text, en_text]).strip()
     if clean_answer != '':
         return clean_answer
 
 def preprocess(answers, enable_trans=False):
 
-    ru_bwords = read_file_as_set('/content/ru_words.txt')  # Set of Russian words
-    en_bwords = read_file_as_set('/content/en_words.txt')  # Set of English words
+    ru_bwords = read_file_as_set('ru_words.txt')  # Set of Russian words
+    en_bwords = read_file_as_set('en_words.txt')  # Set of English words
     ru_morph = Mystem()  # Morphological analyzer for Russian
     en_morph = spacy.load('en_core_web_sm')  # English NLP model
     translator = Translator()  # Translator for language translation
@@ -143,5 +146,5 @@ def preprocess(answers, enable_trans=False):
 
     # results = Parallel(n_jobs=-1)(delayed(clean_answer)(answer, ru_bwords, en_bwords, ru_morph, en_morph, translator, speller, morph, enable_trans) for answer in np.array(answers))
     results = np.array([clean_answer(answer, ru_bwords, en_bwords, ru_morph, en_morph, translator, speller, morph, enable_trans) for answer in np.array(answers)])
+    results = np.array(results)
     return results[results != np.array(None)]
-
