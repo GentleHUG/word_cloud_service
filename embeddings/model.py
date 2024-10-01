@@ -196,7 +196,7 @@ class WordClusterizer:
         top_words, weights = self._get_top_words(
             clustered_words, num_top_words=num_top_words
         )
-        
+
         # TODO: Сделать для Юли возврат слов с разделением по кластерам и пофиксить названия в кластерах при передаче весов
 
         # Получение косинусных расстояний
@@ -206,3 +206,5 @@ class WordClusterizer:
             weights=weights,
             cosines=cosines,
         )
+    
+    # TODO: Сделать новый тип данных, вывод такого же чиста кластеров, сколько будет слов на облаке.

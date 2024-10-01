@@ -32,3 +32,11 @@ class Topwords:
     words_list: Union[list, np.ndarray]
     weights: Dict[int, float]
     cosines: np.ndarray
+
+# TODO: доделать тип данных
+@dataclass
+class TopClusters:
+    cluster_id: int
+    cluster_weight: float
+    cluster_content: List[str]
+    overall_word_cosine: float
