@@ -1,3 +1,18 @@
+# !python -m spacy download en_core_web_sm
+import re
+import pymorphy3 as pm
+# !pip install -U pymorphy3-dicts-ru
+from pymystem3 import Mystem
+from ruwordnet import RuWordNet
+from pyaspeller import YandexSpeller
+from googletrans import Translator
+import spacy
+import numpy as np
+from typing import List
+import os
+!pip install joblib
+from joblib import Parallel, delayed
+
 def read_file_as_set(file_path: str) -> set:
     """
     Reads a file and returns its contents as a set of unique words.
