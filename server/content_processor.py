@@ -7,6 +7,9 @@ import numpy as np
 from PIL import Image, ImageDraw
 from wordcloud import WordCloud
 import CONFIG
+from embeddings.model import get_top_words
+from embeddings.topwords_type import Topwords
+
 
 def create_egg_mask(width, height, egg_size):
 	mask = Image.new("L", (width, height), 'white')
@@ -49,6 +52,11 @@ def generate_word_cloud(word_counts: Counter, filename: str):
 def process_content(strings: List[str], filename: str) -> (str, str):
 	word_list = ' '.join(strings).split()
 	word_counts = Counter(word_list)
+
+	np_strs = np.array(' '.join(strings).split())
+	top_words = get_top_words(np_strs)
+	print(top_words)
+	word_counts = Counter(top_words.words_list)
 
 	image_path = generate_word_cloud(word_counts, filename)
 	print(word_counts.most_common())

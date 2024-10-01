@@ -4,7 +4,7 @@ from umap import UMAP
 from sklearn.cluster import HDBSCAN
 from sentence_transformers import SentenceTransformer
 from collections import Counter
-from topwords_type import Topwords
+from embeddings.topwords_type import Topwords
 import logging
 
 mts_values = [
