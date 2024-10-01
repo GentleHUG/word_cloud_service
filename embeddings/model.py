@@ -203,19 +203,3 @@ class WordClusterizer:
             weights=weights,
             cosines=cosines,
         )
-
-
-# Вызов алгоритма для получения топ-слов
-def get_top_words(
-    words: np.ndarray, num_top_words: Union[int, str] = "auto"
-) -> Topwords:
-    """
-    Функция для получения топ-слов из списка слов.
-
-    :param words: Numpy массив слов для обработки.
-    :param num_top_words: Количество топ-слов для извлечения (int) или 'auto' для автоматического выбора.
-    :return: Объект Topwords, содержащий список топ-слов, веса и косинусные расстояния.
-    """
-    model = WordClusterizer()
-    result = model.forward(words)
-    return result
