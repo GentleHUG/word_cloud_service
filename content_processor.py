@@ -8,8 +8,6 @@ from PIL import Image, ImageDraw
 from wordcloud import WordCloud
 import CONFIG
 from embeddings.model import get_top_words
-from embeddings.topwords_type import Topwords
-from timeit_decorator import timeit
 from pre_process.data_cleaner import preprocess
 
 def create_egg_mask(width, height, egg_size):
@@ -52,7 +50,7 @@ def generate_word_cloud(word_counts: Counter, filename: str):
 	return image_path
 
 
-def process_content(strings: List[str], filename: str) -> (str, str):
+def process_content(strings: List[str], filename: str, enable_trans=False) -> (str, str):
 	np_strs = preprocess(strings)
 	print(type(np_strs), np_strs[0])
 	top_words = get_top_words(np_strs)

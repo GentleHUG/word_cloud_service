@@ -61,7 +61,45 @@
         }
 
         button {
-            margin-top: 20px;
+            margin-top: 0px;
+        }
+
+        .checkbox-label {
+            display: flex;
+            align-items: center;
+            margin: 20px 0;
+            text-align: left;
+        }
+
+        .checkbox-label input[type="checkbox"] {
+            display: none; /* Скрываем стандартный чекбокс */
+        }
+
+        .checkbox-custom {
+            width: 20px;
+            height: 20px;
+            border: 2px solid #ff0032;
+            border-radius: 4px;
+            margin-right: 10px;
+            position: relative;
+            cursor: pointer;
+        }
+
+        .checkbox-custom:after {
+            content: '';
+            position: absolute;
+            top: 2px;
+            left: 2px;
+            width: 16px;
+            height: 16px;
+            background-color: #ff0032;
+            opacity: 0; /* Скрываем галочку по умолчанию */
+            transition: opacity 0.2s ease;
+            border-radius: 4px;
+        }
+
+        .checkbox-label input[type="checkbox"]:checked + .checkbox-custom:after {
+            opacity: 1; /* Показываем галочку при выборе */
         }
 
         @media (max-width: 600px) {
@@ -82,6 +120,13 @@
             Выбрать файл
         </label>
         <input id="file-upload" type="file" name="file" accept=".txt,.csv" required onchange="updateFileName()">
+
+        <label class="checkbox-label">
+            <input type="checkbox" name="enable_trans" value="true">
+            <span class="checkbox-custom"></span>
+            Переводить фразы
+        </label>
+
         <button type="submit">Сотворить магию</button>
     </form>
 
