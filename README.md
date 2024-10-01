@@ -2,7 +2,7 @@
 
 ![Word Cloud Service Logo](path/to/logo.png)
 
-## Table of Contents
+## Содержание
 
 - [Introduction](#introduction)
 - [Features](#features)
@@ -14,65 +14,53 @@
 - [License](#license)
 - [Acknowledgments](#acknowledgments)
 
-## Introduction
+## Описание
 
-Welcome to the **Word Cloud Service (WCS)** project! This service allows users to generate visually appealing word clouds from text data. Word clouds are a popular way to visualize the frequency of words in a given text, making it easier to identify key themes and concepts. This project was developed during a hackathon and aims to provide a user-friendly interface and robust backend for word cloud generation.
+Представляем проект **Word Cloud Service (WCS)** от команды NoIT. Проект создан в рамках хакатона Nuclear Hack Autumn 2024 (НИЯУ МИФИ). Данный сервис позволяет получать интеллекутальное облако слов на основе ответов пользователей. ИИ, на котором основан сервис, автоматически выбирет наиболее важные слова и словосочетания, очищает их от нецензурной и вредной лексики и возвращает особенное облако слов виде персональной маски.
 
-## Features
+## Функции
 
-- **Dynamic Word Cloud Generation**: Create word clouds in real-time from user-provided text.
-- **Customizable Appearance**: Users can customize colors, fonts, and shapes of the word clouds.
-- **Downloadable Outputs**: Save generated word clouds in various formats (PNG, JPEG, SVG).
-- **API Access**: Integrate WCS into other applications via a RESTful API.
-- **Multi-Language Support**: Generate word clouds from text in multiple languages.
-- **User Authentication**: Secure user accounts and save generated word clouds for future access.
+- **Динамическая генераци облака слов**: Возможность создания облаков слов и любых наборов строк.
+- **Кастомный внешний вид**: Есть возможность изменения маски для облака слов.
+- **Скачиваемое облако слов**: Можно сохранить облако слов в формате изображения.
+- **Поддержка нескольких языков**: Сервис обрабатывает как английский, так и русский язык с одинаковой эффективностью.
 
-## Technologies Used
+## Стек технологий
 
 - **Frontend**: 
-  - React.js
-  - D3.js (for rendering word clouds)
-  - Bootstrap (for responsive design)
+  - JS (Flask)
 
 - **Backend**: 
-  - Node.js
-  - Express.js
-  - MongoDB (for data storage)
+  - Python (Flask)
 
-- **Deployment**: 
-  - Docker
-  - Heroku / AWS (for cloud hosting)
+- **ML**:
+  - RuBERT
+  - Pymorphy
+  - SpaCy
 
-## Installation
+## Состав команды
 
-To set up the Word Cloud Service locally, follow these steps:
+- Артемий Терещенко (embeddings + clusterizing)
+- Карпова Юлия (data preprocessing + frontend)
+- Гавриленко Андрей (backend)
+- Сидоров Алексей (data preproceesing) 
 
-1. **Clone the repository**:
+## Установка
+
+Чтобы запустить сервис локально, выполните следующие шаги:
+
+1. **Склонируйте репозиторий**:
    ```bash
-   git clone https://github.com/yourusername/wcs.git
-   cd wcs
+   git clone https://github.com/GentleHUG/word_cloud_service.git
+   cd word_cloud_service
    ```
 
-2. **Install dependencies**:
-   - For the frontend:
-     ```bash
-     cd client
-     npm install
-     ```
-   - For the backend:
-     ```bash
-     cd server
-     npm install
-     ```
-
-3. **Set up environment variables**:
-   Create a `.env` file in the `server` directory and add the following variables:
-   ```
-   MONGODB_URI=your_mongodb_uri
-   JWT_SECRET=your_jwt_secret
+2. **Установите зависимости**:
+   ```bash
+   pip install -r requirements.txt
    ```
 
-4. **Run the application**:
+3. **Run the application**:
    - Start the backend server:
      ```bash
      cd server
@@ -87,7 +75,7 @@ To set up the Word Cloud Service locally, follow these steps:
 5. **Access the application**:
    Open your browser and navigate to `http://localhost:3000`.
 
-## Usage
+## Использование
 
 1. **Creating a Word Cloud**:
    - Navigate to the "Create" page.
@@ -106,25 +94,10 @@ To set up the Word Cloud Service locally, follow these steps:
    curl -X POST http://localhost:5000/api/wordcloud -H "Content-Type: application/json" -d '{"text": "your text here"}'
    ```
 
-## API Documentation
+## Лицензия
 
-For detailed API documentation, please refer to the [API Documentation](docs/API.md) file.
+Проект разрабатан под лицензией MIT. Смотреть файл LICENSE.md для подробностей.
 
-## Contributing
+## Благодарности
 
-We welcome contributions to the Word Cloud Service project! To contribute:
-
-1. Fork the repository.
-2. Create a new branch (`git checkout -b feature/YourFeature`).
-3. Make your changes and commit them (`git commit -m 'Add some feature'`).
-4. Push to the branch (`git push origin feature/YourFeature`).
-5. Open a pull request.
-
-## License
-
-This project is licensed under the MIT License. See the [LICENSE](LICENSE) file for details.
-
-## Acknowledgments
-
-- Special thanks to the organizers of the hackathon for providing the platform to develop this project.
-- Thanks to all contributors and supporters who helped make this project a reality.
+- Команда благодарит организаторов за проведение данного мероприятия.
