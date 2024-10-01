@@ -1,7 +1,7 @@
 # TODO: Добписать импорты
 
 class ContentProcessor:
-    # TODO: дописать сюда в инит Леша тебе импорты которые нужны твоему классу
+    # TODO: дописать сюда в инит Леша тебе импорты которые нужны твоему классу вместо 3 точек
     def __init__(self, ...):
         self.preprocess_model = WordClusterizer()
         self.process_model = TextProcessor(...)

@@ -196,6 +196,9 @@ class WordClusterizer:
         top_words, weights = self._get_top_words(
             clustered_words, num_top_words=num_top_words
         )
+        
+        # TODO: Сделать для Юли возврат слов с разделением по кластерам и пофиксить названия в кластерах при передаче весов
+
         # Получение косинусных расстояний
         cosines = self._get_cosines(top_words)
         return Topwords(
