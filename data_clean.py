@@ -37,8 +37,8 @@ def translate(word):
 
 
 def preprocess(text, enable_trans=False):
-    ru_bwords = read_file_as_set('server/ru_words.txt')
-    en_bwords = read_file_as_set('server/en_words.txt')
+    ru_bwords = read_file_as_set('ru_words.txt')
+    en_bwords = read_file_as_set('en_words.txt')
     # wn = RuWordNet()
     # ru_morph = pm.MorphAnalyzer(lang='ru')
     ru_morph = Mystem()

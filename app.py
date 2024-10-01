@@ -21,6 +21,8 @@ def upload_file():
     if 'file' not in request.files:
         return redirect(url_for('index'))
 
+    enable_trans = 'enable_trans' in request.form
+
     file = request.files['file']
     if file.filename == '':
         return redirect(url_for('index'))
@@ -30,7 +32,7 @@ def upload_file():
         file.save(filepath)
 
         content = read_file_lines(filepath)
-        image_path, json_data = process_content(content, file.filename)
+        image_path, json_data = process_content(content, enable_trans, file.filename)
 
         return render_template('wordcloud.html', image=image_path, json_data=json_data)
 
