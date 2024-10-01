@@ -67,8 +67,9 @@ def custom_color_func(word, font_size, position, orientation, random_state=None,
 # // TODO Нужно реализовать функцию обработки слов)
 def precess_words(string_list: List[str], enable_trans: bool):
 	cleaned_words = preprocess(' '.join(string_list), enable_trans)
+	print("cleaned words: ", cleaned_words)
 	top_words = get_top_words(cleaned_words)
-	print("hello")
+	print("top_words: ", top_words)
 	return top_words
 
 
@@ -87,8 +88,7 @@ def extract_words(string_list: List[str]) -> List[str]:
 
 
 def my_process_word_func(string_list: List[str], enable_trans: bool) -> Dict[str, float]:
-	print(precess_words(string_list, enable_trans))
-	counter = Counter(list(precess_words(string_list, enable_trans)))
+	counter = Counter(precess_words(string_list, enable_trans).tolist())
 	max_freq: int = counter.most_common(1)[0][1]
 	return {key: round(value / max_freq, 4) for key, value in counter.items()}
 
@@ -113,7 +113,7 @@ async def generate_wordcloud(req: ProcessWordsRequest):
 	mask = create_egg_mask(width, height, egg_size)
 
 	# TODO Здесь должна быть обработка с помощью ML
-	aggregated_words = precess_words(req.items, req.enable_trans)
+	aggregated_words = my_process_word_func(req.items, req.enable_trans)
 
 	wordcloud = WordCloud(
 		width=width,
@@ -123,8 +123,8 @@ async def generate_wordcloud(req: ProcessWordsRequest):
 		scale=1,
 		color_func=lambda *args, **kwargs: "white",
 		# color_func=custom_color_func,
-		font_path=config["fort_path"],
-		prefer_horizontal=1
+		# font_path=config["fort_path"],
+		# prefer_horizontal=1
 	).generate_from_frequencies(aggregated_words)
 
 	plt.figure(figsize=(width_in_inches, height_in_inches), dpi=dpi)

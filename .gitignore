@@ -3,3 +3,4 @@
 **/.venv/**
 **/.conda/**
 **/__pycache__/**
+/server/uploads/**

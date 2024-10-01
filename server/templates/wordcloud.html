@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Word Cloud</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            color: #333;
+            text-align: center;
+        }
+
+        h1 {
+            font-size: 2rem;
+            color: #ff0032; /* Красный цвет, характерный для МТС */
+            margin-bottom: 30px;
+        }
+
+        img {
+            max-width: 80%;
+            height: auto;
+        }
+
+        h2 {
+            font-size: 1.5rem;
+            color: #333;
+            margin-top: 20px;
+        }
+
+        pre {
+            background-color: white;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            padding: 20px;
+            width: 80%;
+            max-width: 600px;
+            overflow: visible; /* Убираем прокрутку */
+            white-space: pre-wrap; /* Позволяет переносить длинные строки */
+            word-wrap: break-word; /* Позволяет переносить слова */
+            margin-top: 10px;
+        }
+
+        a {
+            display: inline-block;
+            margin-top: 20px;
+            background-color: #ff0032; /* Красный цвет */
+            color: white;
+            padding: 10px 15px;
+            border-radius: 4px;
+            text-decoration: none;
+            transition: background-color 0.3s ease;
+        }
+
+        a:hover {
+            background-color: #d2002b; /* Темнее красного при наведении */
+        }
+    </style>
+</head>
+<body>
+    <h1>Долгожданное облако слов</h1>
+    <img src="{{ image }}" alt="Wordcloud">
+    <h2>Агрегированные слова с их количеством (JSON Data):</h2>
+    <pre>{{ json_data }}</pre>
+    <a href="/">Загрузить другой файл</a>
+</body>
+</html>
