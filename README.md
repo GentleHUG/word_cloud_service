@@ -1,3 +1,87 @@
+# NoIT: Сервис Облаков Слов (WCS)
+
+# TODO: Добавить логотип
+![Логотип Сервиса Облаков Слов](path/to/logo.png)
+
+## Содержание
+
+- [Введение](#введение)
+- [Особенности](#особенности)
+- [Используемые технологии](#используемые-технологии)
+- [Состав команды](#состав-команды)
+- [Установка](#установка)
+- [Использование](#использование)
+- [Лицензия](#лицензия)
+- [Благодарности](#благодарности)
+
+## Введение
+
+Добро пожаловать в проект **Сервис Облаков Слов (WCS)** от команды NoIT! Этот проект был разработан в рамках хакатона Nuclear Hack Autumn 2024 (НИЯУ МИФИ). С помощью нашего сервиса вы можете создавать уникальные облака слов на основе ответов пользователей. Искусственный интеллект, лежащий в основе сервиса, автоматически выделяет наиболее значимые слова и фразы, очищает их от ненормативной лексики и формирует персонализированное облако слов в виде маски.
+
+## Особенности
+
+- **Динамическая генерация облаков слов**: Создавайте облака слов из любых наборов строк в реальном времени.
+- **Кастомный внешний вид**: Настраивайте маску для облака слов по своему вкусу.
+- **Скачиваемое облако слов**: Сохраняйте облака слов в формате изображения для дальнейшего использования.
+- **Поддержка нескольких языков**: Эффективная обработка как русского, так и английского языков.
+
+## Используемые технологии
+
+- **Frontend**: 
+  - JavaScript (Flask)
+
+- **Backend**: 
+  - Python (Flask)
+
+- **Машинное обучение**:
+  - RuBERT
+  - Pymorphy
+  - SpaCy
+
+## Состав команды
+
+- Артемий Терещенко (векторизация + кластеризация)
+- Карпова Юлия (предобработка данных + фронтенд)
+- Гавриленко Андрей (бэкенд)
+- Сидоров Алексей (предобработка данных)
+
+## Установка
+
+Чтобы запустить сервис локально, выполните следующие шаги:
+
+1. **Склонируйте репозиторий**:
+   ```bash
+   git clone https://github.com/GentleHUG/word_cloud_service.git
+   cd word_cloud_service
+   ```
+
+2. **Установите зависимости**:
+   ```bash
+   pip install -r requirements.txt
+   ```
+
+3. **Запустите приложение**:
+   ```bash
+   python app.py
+   ```
+
+4. **Доступ к сервису**:
+   Откройте браузер и перейдите на `http://localhost:8000`.
+
+## Использование
+
+...
+
+## Лицензия
+
+Проект разработан под лицензией MIT. Подробности смотрите в файле LICENSE.md.
+
+## Благодарности
+
+- Мы выражаем благодарность организаторам за проведение этого замечательного мероприятия.
+
+---
+
 # NoIT: Word Cloud Service (WCS) Project
 
 ![Word Cloud Service Logo](path/to/logo.png)
@@ -7,124 +91,90 @@
 - [Introduction](#introduction)
 - [Features](#features)
 - [Technologies Used](#technologies-used)
+- [Team members](#team-members)
 - [Installation](#installation)
 - [Usage](#usage)
-- [API Documentation](#api-documentation)
-- [Contributing](#contributing)
 - [License](#license)
 - [Acknowledgments](#acknowledgments)
 
 ## Introduction
 
-Welcome to the **Word Cloud Service (WCS)** project! This service allows users to generate visually appealing word clouds from text data. Word clouds are a popular way to visualize the frequency of words in a given text, making it easier to identify key themes and concepts. This project was developed during a hackathon and aims to provide a user-friendly interface and robust backend for word cloud generation.
+Welcome to the **Word Cloud Service (WCS)** project by the NoIT team! This project was developed during the Nuclear Hack Autumn 2024 hackathon (NIYAU MEPhI). With our service, you can create unique word clouds based on user responses. The artificial intelligence behind the service automatically selects the most significant words and phrases, cleans them of inappropriate language, and generates a personalized word cloud in the form of a mask.
 
 ## Features
 
-- **Dynamic Word Cloud Generation**: Create word clouds in real-time from user-provided text.
-- **Customizable Appearance**: Users can customize colors, fonts, and shapes of the word clouds.
-- **Downloadable Outputs**: Save generated word clouds in various formats (PNG, JPEG, SVG).
-- **API Access**: Integrate WCS into other applications via a RESTful API.
-- **Multi-Language Support**: Generate word clouds from text in multiple languages.
-- **User Authentication**: Secure user accounts and save generated word clouds for future access.
+- **Dynamic Word Cloud Generation**: Create word clouds from any set of strings in real-time.
+- **Custom Appearance**: Customize the mask for the word cloud to your liking.
+- **Downloadable Word Cloud**: Save word clouds as image files for further use.
+- **Multilingual Support**: Efficient processing of both Russian and English languages.
 
 ## Technologies Used
 
 - **Frontend**: 
-  - React.js
-  - D3.js (for rendering word clouds)
-  - Bootstrap (for responsive design)
+  - JavaScript (Flask)
 
 - **Backend**: 
-  - Node.js
-  - Express.js
-  - MongoDB (for data storage)
+  - Python (Flask)
 
-- **Deployment**: 
-  - Docker
-  - Heroku / AWS (for cloud hosting)
+- **Machine Learning**:
+  - RuBERT
+  - Pymorphy
+  - SpaCy
+
+## Team Members
+
+- Artemiy Tereshchenko (embeddings + clustering)
+- Yulia Karpova (data preprocessing + frontend)
+- Andrey Gavrilenko (backend)
+- Alexey Sidorov (data preprocessing)
 
 ## Installation
 
-To set up the Word Cloud Service locally, follow these steps:
+To run the service locally, follow these steps:
 
 1. **Clone the repository**:
    ```bash
-   git clone https://github.com/yourusername/wcs.git
-   cd wcs
+   git clone https://github.com/GentleHUG/word_cloud_service.git
+   cd word_cloud_service
    ```
 
 2. **Install dependencies**:
-   - For the frontend:
-     ```bash
-     cd client
-     npm install
-     ```
-   - For the backend:
-     ```bash
-     cd server
-     npm install
-     ```
-
-3. **Set up environment variables**:
-   Create a `.env` file in the `server` directory and add the following variables:
-   ```
-   MONGODB_URI=your_mongodb_uri
-   JWT_SECRET=your_jwt_secret
+   ```bash
+   pip install -r requirements.txt
    ```
 
-4. **Run the application**:
-   - Start the backend server:
-     ```bash
-     cd server
-     npm start
-     ```
-   - Start the frontend application:
-     ```bash
-     cd client
-     npm start
-     ```
+3. **Run the application**:
+   ```bash
+   python app.py
+   ```
 
-5. **Access the application**:
-   Open your browser and navigate to `http://localhost:3000`.
+4. **Access the service**:
+   Open your browser and go to `http://localhost:8000`.
 
 ## Usage
 
-1. **Creating a Word Cloud**:
-   - Navigate to the "Create" page.
-   - Input your text in the provided text area.
-   - Customize the appearance using the options available.
-   - Click on "Generate Word Cloud" to see the result.
-
-2. **Saving and Downloading**:
-   - After generating a word cloud, you can save it to your account or download it directly.
-
-3. **API Usage**:
-   - To generate a word cloud via the API, send a POST request to `/api/wordcloud` with the text data in the body.
-
-   Example:
-   ```bash
-   curl -X POST http://localhost:5000/api/wordcloud -H "Content-Type: application/json" -d '{"text": "your text here"}'
-   ```
+To use the Word Cloud Service, simply input your text data into the provided interface. The service will process the input and generate a visually appealing word cloud based on the most significant terms. You can customize the appearance and download the final output as an image.
 
 ## API Documentation
 
-For detailed API documentation, please refer to the [API Documentation](docs/API.md) file.
+For developers interested in integrating with our service, detailed API documentation is available. It includes endpoints, request/response formats, and examples to help you get started.
 
 ## Contributing
 
-We welcome contributions to the Word Cloud Service project! To contribute:
+We welcome contributions from the community! If you would like to contribute to the project, please follow these steps:
 
 1. Fork the repository.
-2. Create a new branch (`git checkout -b feature/YourFeature`).
-3. Make your changes and commit them (`git commit -m 'Add some feature'`).
-4. Push to the branch (`git push origin feature/YourFeature`).
-5. Open a pull request.
+2. Create a new branch for your feature or bug fix.
+3. Make your changes and commit them.
+4. Push your branch to your forked repository.
+5. Submit a pull request.
+
+Please ensure that your code adheres to our coding standards and includes appropriate tests.
 
 ## License
 
-This project is licensed under the MIT License. See the [LICENSE](LICENSE) file for details.
+This project is licensed under the MIT License. See the LICENSE.md file for more details.
 
 ## Acknowledgments
 
-- Special thanks to the organizers of the hackathon for providing the platform to develop this project.
-- Thanks to all contributors and supporters who helped make this project a reality.
+- We would like to thank the organizers for hosting this wonderful event and providing us with the opportunity to showcase our work.
