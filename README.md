@@ -1,7 +1,6 @@
 # NoIT: Сервис Облаков Слов (WCS)
 
 # TODO: Добавить логотип
-# TODO: Добавить requirements.txt
 
 ![Логотип Сервиса Облаков Слов](path/to/logo.png)
 
