@@ -1,4 +1,5 @@
 import math
+import random
 from typing import Dict
 
 import numpy as np
@@ -40,6 +41,7 @@ class ImageProcessor:
 	# функция находит цвет на палитре градиента от одного цвета к другому со степенью alpha
 	@staticmethod
 	def grad_color(alpha: float, color1 = (255, 0, 50), color2 = (0, 0, 0)):
+		alpha = np.random.rand()
 		r = int(color1[0] + (color2[0] - color1[0]) * alpha)
 		g = int(color1[1] + (color2[1] - color1[1]) * alpha)
 		b = int(color1[2] + (color2[2] - color1[2]) * alpha)
@@ -48,15 +50,16 @@ class ImageProcessor:
 	#подаем массив с косинусными расстояниями до всех слов-'ценностей', получаем массив цветов
 
 	def generate_word_cloud(self, words_and_weights: Dict[str, float], color_weights: Dict[str, float], filename: str) -> str:
-		norm = max(color_weights.values()) / min(color_weights.values())
-
+		# norm = max(color_weights.values()) / min(color_weights.values())
+		print(words_and_weights)
+		print(color_weights)
 		wordcloud = WordCloud(
 			width=self.width,
 			height=self.height,
 			background_color=self.background_color,
 			mask=self.mask,
 			scale=1,
-			color_func=lambda x, **kwargs: ImageProcessor.grad_color(color_weights[x] / norm),
+			color_func=lambda x, **kwargs: ImageProcessor.grad_color(color_weights[x]),
 		).generate_from_frequencies(words_and_weights)
 
 		image_path = f'static/{filename}.png'
