@@ -1,7 +1,5 @@
 # NoIT: Сервис Облаков Слов (WCS)
 
-# TODO: Добавить логотип
-
 ![Логотип Сервиса Облаков Слов](path/to/logo.png)
 
 ## Содержание
@@ -12,7 +10,6 @@
 - [Состав команды](#состав-команды)
 - [Установка](#установка)
 - [Использование](#использование)
-- [Лицензия](#лицензия)
 - [Благодарности](#благодарности)
 
 ## Введение
@@ -28,10 +25,10 @@
 
 ## Используемые технологии
 
-- **Frontend**: 
+- **Frontend**:
   - JavaScript (Flask)
 
-- **Backend**: 
+- **Backend**:
   - Python (Flask)
 
 - **Машинное обучение**:
@@ -52,18 +49,21 @@
 Чтобы запустить сервис локально, выполните следующие шаги:
 
 1. **Склонируйте репозиторий**:
+
    ```bash
    git clone https://github.com/GentleHUG/word_cloud_service.git
    cd word_cloud_service
    ```
 
 2. **Установите зависимости**:
+
    ```bash
    pip install -r requirements.txt
    python -m spacy download en_core_web_sm
    ```
 
 3. **Запустите приложение**:
+
    ```bash
    python app.py
    ```
@@ -93,7 +93,6 @@
 - [Team members](#team-members)
 - [Installation](#installation)
 - [Usage](#usage)
-- [License](#license)
 - [Acknowledgments](#acknowledgments)
 
 ## Introduction
@@ -109,10 +108,10 @@ Welcome to the **Word Cloud Service (WCS)** project by the NoIT team! This proje
 
 ## Technologies Used
 
-- **Frontend**: 
+- **Frontend**:
   - JavaScript (Flask)
 
-- **Backend**: 
+- **Backend**:
   - Python (Flask)
 
 - **Machine Learning**:
@@ -133,18 +132,21 @@ Welcome to the **Word Cloud Service (WCS)** project by the NoIT team! This proje
 To run the service locally, follow these steps:
 
 1. **Clone the repository**:
+
    ```bash
    git clone https://github.com/GentleHUG/word_cloud_service.git
    cd word_cloud_service
    ```
 
 2. **Install dependencies**:
+
    ```bash
    pip install -r requirements.txt
    python -m spacy download en_core_web_sm
    ```
 
 3. **Run the application**:
+
    ```bash
    python app.py
    ```
