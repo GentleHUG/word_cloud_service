@@ -235,6 +235,7 @@ class WordClusterizer:
                     cluster_id=int(cluster_id),
                     cluster_weight=cluster_weight,
                     cluster_content=list(cluster_words),
+                    overall_word_cosine=0
                 )
             )
 
@@ -321,6 +322,7 @@ class WordClusterizer:
                     cluster_id=cluster.cluster_id,
                     cluster_weight=cluster.cluster_weight,
                     cluster_content=cluster.cluster_content,
+                    overall_word_cosine=0
                 )
             )
 

@@ -10,13 +10,12 @@ class ContentProcessor:
     # TODO: дописать сюда в инит Леша тебе импорты которые нужны твоему классу вместо 3 точек
     def __init__(self, ru_words_path: str, en_words_path: str, enable_trans: bool = False):
         logging.info("Initializing WordClustreizer() class.")
-        self.preprocess_model = WordClusterizer()
-        # TODO: У меня тут показывает, что скобка не закрыта, я не понимаю где((((
-        self.process_model = TextProcessor(ru_words_path: str, en_words_path: str, enable_trans: bool = False)
+        self.process_model = WordClusterizer()
+        self.preprocess_model = TextProcessor(ru_words_path, en_words_path, enable_trans)
 
     def preprocess(self, input: np.ndarray) -> np.ndarray:
         logging.info("Preprocessing data.")
-        result = self.preprocess_model.forward()
+        result = self.preprocess_model.forward(input)
         return result
 
     def process(self, input: np.ndarray, num_top_words: Union[int, str] = "auto") -> List[TopClusters]:

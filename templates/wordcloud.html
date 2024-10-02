@@ -61,7 +61,7 @@
     <img src="{{ image }}" alt="Wordcloud">
 
     <!-- Кнопка для скачивания JSON файла -->
-    <a href="/path/to/your/file.json" download="data.json" class="download-button">Скачать JSON файл</a>
+    <a href="{{ url_for('download_file', filename=json_filename) }}" class="download-button">Скачать JSON файл</a>
 
     <a href="/" class="link-button">Загрузить другой файл</a>
 </body>

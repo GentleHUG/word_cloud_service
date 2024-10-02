@@ -34,7 +34,8 @@ class ImageProcessor:
 		self.background_color = background_color
 		self.mask = self._create_egg_mask(self.width, self.height, egg_size)
 
-	def generate_word_cloud(self, words_and_weights: Dict[str, float], filename: str):
+
+	def generate_word_cloud(self, words_and_weights: Dict[str, float], filename: str) -> str:
 		wordcloud = WordCloud(
 			width=self.width,
 			height=self.height,
