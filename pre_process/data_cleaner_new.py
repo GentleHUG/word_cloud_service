@@ -83,26 +83,20 @@ class TextProcessor:
             for ind, item in enumerate(ru_text):
                 p = self.morph.parse(item)[0]
                 if (item or p.normal_form) not in self.ru_bwords:
-                      pos = p.tag.POS
-                      if pos == 'NOUN':
+                      if p.tag.POS == 'NOUN':
                           case, number = (p.tag.case, p.tag.number)
                           if (case, number) == ("gent", "sing") or number == "plur":
                               ru_text[ind] = p.inflect({"plur", "nomn"}).word
                           else:
                               ru_text[ind] = p.normal_form
-                      elif pos == 'ADJF':
-                          gender, number = (p.tag.gender, p.tag.number)
-                          if ind != 0:
-                              p_prev = self.morph.parse(ru_text[ind - 1])[0]
-                              pos_prev = p_prev.tag.POS
-                              if pos_prev == 'NOUN':
-                                  if number == 'plur':
-                                      ru_text[ind - 1] = p.inflect({"plur", "nomn"}).word + ' ' + ru_text[ind - 1]
-                                  else:
-                                      ru_text[ind - 1] = p.inflect({number, gender, "nomn"}).word + ' ' + ru_text[ind - 1]
-                                  ru_text[ind] = ''
+                      elif p.tag.POS == 'ADJF':
+                          if ind != 0 and self.morph.parse(ru_text[ind - 1])[0].tag.POS == 'NOUN':
+                              gender, number = (p.tag.gender, p.tag.number)
+                              if number == 'plur':
+                                  ru_text[ind - 1] = p.inflect({"plur", "nomn"}).word + ' ' + ru_text[ind - 1]
                               else:
-                                  ru_text[ind] = p.normal_form
+                                  ru_text[ind - 1] = p.inflect({number, gender, "nomn"}).word + ' ' + ru_text[ind - 1]
+                              ru_text[ind] = ''
                           else:
                               ru_text[ind] = p.normal_form
                       else:
@@ -119,7 +113,9 @@ class TextProcessor:
         """
         logging.info("Fixing grammar in answers.")
         fixed_grammar_answers = [self.fixed_grammar(answer) for answer in answers]
+        
         logging.info("Getting normalized form of answers.")
         results = [self.clean_answer(answer) for answer in fixed_grammar_answers]
+        
         return np.array(list(itertools.chain.from_iterable(results)))
         
