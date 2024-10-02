@@ -32,6 +32,8 @@ def upload_file():
 	if "file" not in request.files:
 		return redirect(url_for("index"))
 
+	enable_trans = request.form.get("enable_trans")
+
 	file = request.files["file"]
 	if file.filename == "":
 		return redirect(url_for("index"))
@@ -41,7 +43,7 @@ def upload_file():
 		file.save(filepath)
 
 		content = read_file_lines(filepath)
-		preprocessed = cont_proc.preprocess(content)
+		preprocessed = cont_proc.preprocess(content, enable_trans)
 		processed = cont_proc.process(preprocessed)
 
 		res = {top_cluster.cluster_content[0]: top_cluster.cluster_weight for top_cluster in processed}

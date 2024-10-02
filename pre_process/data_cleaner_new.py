@@ -1,41 +1,29 @@
-# TODO: Скопируй все библы
 import spacy
-# !python -m spacy download en_core_web_sm
 import re
 import pymorphy3 as pm
-# !pip install -U pymorphy3-dicts-ru
 from pyaspeller import YandexSpeller
 from googletrans import Translator
 import numpy as np
-from typing import List
-import os
 import itertools
-from joblib import Parallel, delayed
 import logging
 
 
 class TextProcessor:
 	def __init__(
-			self, ru_words_path: str, en_words_path: str, enable_trans: bool = False
+			self, ru_words_path: str, en_words_path: str
 	):
 		logging.info("Initializing data cleaner modules.")
-		logging.info("Loading ru_bwords.")
 		self.ru_bwords = self.read_file_as_set(
 			ru_words_path
 		)  # Set of Russian bad words
-		logging.info("Loading en_bwords.")
 		self.en_bwords = self.read_file_as_set(
 			en_words_path
 		)  # Set of English bad words
-		logging.info("Loading en_morph.")
 		self.en_morph = spacy.load("en_core_web_sm")  # English NLP model
-		logging.info("Loading translator.")
 		self.translator = Translator()  # Translator for language translation
-		logging.info("Loading speller.")
 		self.speller = YandexSpeller()  # Spelling checker
-		logging.info("Loading ru_morph.")
 		self.morph = pm.MorphAnalyzer(lang="ru")  # Morphological analyzer for Russian
-		self.enable_trans = enable_trans
+
 
 	def read_file_as_set(self, file_path: str) -> set:
 		"""
@@ -47,11 +35,13 @@ class TextProcessor:
 			word_set = set(words)
 		return word_set
 
+
 	def fixed_grammar(self, text: str) -> str:
 		"""
         Corrects the grammar of the given text using a spelling checker.
         """
 		return self.speller.spelled(text)
+
 
 	def translate(self, word: str) -> str:
 		"""
@@ -59,7 +49,8 @@ class TextProcessor:
         """
 		return self.translator.translate(word, src="en", dest="ru").text
 
-	def clean_answer(self, text: str) -> str:
+
+	def clean_answer(self, text: str, enable_trans: bool) -> str:
 		"""
         Cleans and processes the input text by correcting grammar, translating words, and filtering out bad words.
         """
@@ -68,7 +59,7 @@ class TextProcessor:
 		en_trans_text = []
 		if en_text:
 			en_text = [token.lemma_.lower() for token in self.en_morph(en_text)]
-			if self.enable_trans:
+			if enable_trans:
 				en_trans_text = [self.translate(item) for item in en_text]
 				en_text = []
 			else:
@@ -87,6 +78,8 @@ class TextProcessor:
 						if (case, number) == ("gent", "sing") or number == "plur":
 							if p.inflect({"plur", "nomn"}) is not None:
 								ru_text[ind] = p.inflect({"plur", "nomn"}).word
+							else:
+								ru_text[ind] = p.normal_form
 						else:
 							ru_text[ind] = p.normal_form
 					elif p.tag.POS == 'ADJF':
@@ -107,7 +100,8 @@ class TextProcessor:
 		ru_text = [item for item in ru_text[::-1] if item]
 		return en_text + ru_text
 
-	def forward(self, answers: np.ndarray) -> np.ndarray:
+
+	def forward(self, answers: np.ndarray, enable_trans: bool = False) -> np.ndarray:
 		"""
         Processes a list of answers by cleaning and filtering them.
         """
@@ -115,7 +109,7 @@ class TextProcessor:
 		# fixed_grammar_answers = [self.fixed_grammar(answer) for answer in answers]
 
 		logging.info("Getting normalized form of answers.")
-		results = [self.clean_answer(answer) for answer in answers]
+		results = [self.clean_answer(answer, enable_trans) for answer in answers]
 		# results = [self.clean_answer(answer) for answer in fixed_grammar_answers]
 
 		return np.array(list(itertools.chain.from_iterable(results)))
