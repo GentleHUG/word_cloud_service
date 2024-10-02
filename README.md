@@ -107,7 +107,7 @@ Welcome to the **Word Cloud Service (WCS)** project by the NoIT team! This proje
 ## Technologies Used
 
 - **Frontend**:
-  - JavaScript (Flask)
+  - JavaScript Flask
 
 - **Backend**:
   - Python (Flask)
