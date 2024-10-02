@@ -13,7 +13,7 @@ app.config["UPLOAD_FOLDER"] = CONFIG.UPLOAD_PATH
 app.config["MAX_CONTENT_LENGTH"] = 32 * 1024 * 1024  # 32 MB
 
 cont_proc = ContentProcessor(ru_words_path=CONFIG.RU_BANNED_WORDS_PATH, en_words_path=CONFIG.EN_BANNED_WORDS_PATH)
-image_proc = ImageProcessor(CONFIG.IMAGE_WIDTH, CONFIG.IMAGE_HEIGHT)
+image_proc = ImageProcessor(CONFIG.IMAGE_WIDTH, CONFIG.IMAGE_HEIGHT, CONFIG.EGG_SIZE)
 
 logging.basicConfig(level=logging.INFO, format='%(levelname)s: %(message)s')
 
@@ -50,14 +50,15 @@ def upload_file():
 
 		image_path = image_proc.generate_word_cloud(res, file.filename)
 		json_path = create_json_file(res, file.filename)
-		return render_template("wordcloud.html", image=image_path, json=json_path)
+		print(json_path)
+		return render_template("wordcloud.html", image=image_path, json_filename=json_path)
 
 	return redirect(url_for("index"))
 
 
 @app.route("/download/<filename>")
 def download_file(filename):
-	return send_file(os.path.join(CONFIG.UPLOAD_PATH, filename), as_attachment=True)
+	return send_file(os.path.join("static/", filename), as_attachment=True)
 
 
 if __name__ == "__main__":
