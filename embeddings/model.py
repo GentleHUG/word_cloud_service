@@ -34,6 +34,7 @@ class WordClusterizer:
         logging.info("Initializing embedding modules.")
         logging.info("Loading SentenceTransformer.")
         self.model = SentenceTransformer("cointegrated/rubert-tiny2")
+        self.mts_values_embds = self.model.encode(mts_values)
 
     def _get_embeddings(self, word_list: np.ndarray) -> np.ndarray:
         """
@@ -64,6 +65,10 @@ class WordClusterizer:
 
         # Получение эмбеддингов для слов
         self.embeddings = self._get_embeddings(self.word_list)
+
+        self.hashmap = {
+            self.word_list[i]: self.embeddings[i] for i in range(self.num_words)
+        }
 
         # Уменьшение размерности с помощью UMAP
         self.umap_model = UMAP(n_components=max(2, int(np.log(self.num_words))))
@@ -161,12 +166,11 @@ class WordClusterizer:
         global mts_values
 
         # Получение эмбеддингов для топ-слов и предопределенных значений
-        top_words_embds = self._get_embeddings(top_words)
-        mts_values_embds = self._get_embeddings(mts_values)
+        top_words_embds = np.array([self.hashmap[w] for w in top_words])
 
         # Уменьшение размерности для топ-слов и предопределенных значений
         reduced_twe = self.umap_model.transform(top_words_embds)
-        reduced_mve = self.umap_model.transform(mts_values_embds)
+        reduced_mve = self.umap_model.transform(self.mts_values_embds)
 
         # Список для хранения косинусных расстояний
         distances = []
@@ -330,5 +334,3 @@ class WordClusterizer:
             )
 
         return result  # Return the list of TopClusters
-
-    # TODO: Сделать новый тип данных, вывод такого же чиста кластеров, сколько будет слов на облаке.
