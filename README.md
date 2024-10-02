@@ -39,6 +39,7 @@
   - RuBERT
   - Pymorphy
   - SpaCy
+  - HDBSCAN
 
 ## Состав команды
 
@@ -60,6 +61,7 @@
 2. **Установите зависимости**:
    ```bash
    pip install -r requirements.txt
+   python -m spacy download en_core_web_sm
    ```
 
 3. **Запустите приложение**:
@@ -97,7 +99,7 @@
 
 ## Introduction
 
-Welcome to the **Word Cloud Service (WCS)** project by the NoIT team! This project was developed during the Nuclear Hack Autumn 2024 hackathon (NIYAU MEPhI). With our service, you can create unique word clouds based on user responses. The artificial intelligence behind the service automatically selects the most significant words and phrases, cleans them of inappropriate language, and generates a personalized word cloud in the form of a mask.
+Welcome to the **Word Cloud Service (WCS)** project by the NoIT team! This project was developed during the Nuclear Hack Autumn 2024 hackathon (NRNU MEPhI). With our service, you can create unique word clouds based on user responses. The artificial intelligence behind the service automatically selects the most significant words and phrases, cleans them of inappropriate language, and generates a personalized word cloud in the form of a mask.
 
 ## Features
 
@@ -118,6 +120,7 @@ Welcome to the **Word Cloud Service (WCS)** project by the NoIT team! This proje
   - RuBERT
   - Pymorphy
   - SpaCy
+  - HDBSCAN
 
 ## Team Members
 
@@ -139,6 +142,7 @@ To run the service locally, follow these steps:
 2. **Install dependencies**:
    ```bash
    pip install -r requirements.txt
+   python -m spacy download en_core_web_sm
    ```
 
 3. **Run the application**:

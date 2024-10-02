@@ -226,7 +226,7 @@ class WordClusterizer:
         clusters_data = []
         for cluster_id, count in top_clusters:
             cluster_words = together[together[:, 0] == str(cluster_id)][:, 1]
-            cluster_weight = count / total_elements if total_elements > 0 else 0
+            cluster_weight = count
             # weights.append(cluster_weight)
 
             # Создание экземпляра TopClusters
