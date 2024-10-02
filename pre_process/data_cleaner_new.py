@@ -3,6 +3,7 @@ import re
 import pymorphy3 as pm
 from pyaspeller import YandexSpeller
 from googletrans import Translator
+from joblib import Parallel, delayed
 import numpy as np
 import itertools
 import logging
@@ -23,6 +24,7 @@ class TextProcessor:
         self.translator = Translator()  # Translator for language translation
         self.speller = YandexSpeller()  # Spelling checker
         self.morph = pm.MorphAnalyzer(lang="ru")  # Morphological analyzer for Russian
+        self.data = []
 
     def read_file_as_set(self, file_path: str) -> set:
         """
@@ -34,17 +36,10 @@ class TextProcessor:
             word_set = set(words)
         return word_set
 
-    def fixed_grammar(self, text: str) -> str:
-        """
-        Corrects the grammar of the given text using a spelling checker.
-        """
-        return self.speller.spelled(text)
-
     def translate(self, word: str) -> str:
         """
         Translates a word from English to Russian.
         """
-        print(word, type(word))
         return self.translator.translate(word, src="en", dest="ru").text
 
     def clean_answer(self, text: str, enable_trans: bool) -> str:
@@ -98,15 +93,25 @@ class TextProcessor:
         ru_text = [item for item in ru_text[::-1] if item]
         return en_text + ru_text
 
-    def forward(self, answers: np.ndarray, enable_trans: bool = False) -> np.ndarray:
+    def forward(self, answers: np.ndarray, enable_trans: bool = False, enable_grammarer: bool = False) -> np.ndarray:
         """
         Processes a list of answers by cleaning and filtering them.
         """
-        logging.info("Fixing grammar in answers.")
-        # fixed_grammar_answers = [self.fixed_grammar(answer) for answer in answers]
+        
+        self.data = answers
+
+        def grammar(text: str) -> str:
+            """
+            Corrects the grammar of the input text using Yandex Speller.
+            """
+            speller = YandexSpeller()
+            return speller.spelled(text)
+
+        if enable_grammarer:
+            logging.info("Fixing grammar in answers.")
+            self.data = Parallel(n_jobs=-1)(delayed(grammar)(item) for item in self.data)
 
         logging.info("Getting normalized form of answers.")
-        results = [self.clean_answer(answer, enable_trans) for answer in answers]
-        # results = [self.clean_answer(answer) for answer in fixed_grammar_answers]
+        results = [self.clean_answer(answer, enable_trans) for answer in self.data]
 
         return np.array(list(itertools.chain.from_iterable(results)))
