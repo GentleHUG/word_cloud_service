@@ -323,13 +323,13 @@ class WordClusterizer:
         # Prepare the result with TopClusters instances
         result = []
         for cluster in top_clusters:
-            cosines = self._get_cosines(cluster.cluster_content)
+            # cosines = self._get_cosines(cluster.cluster_content)
             result.append(
                 TopCluster(
                     cluster_id=cluster.cluster_id,
                     cluster_weight=cluster.cluster_weight,
                     cluster_content=cluster.cluster_content,
-                    words_cosines=cosines,
+                    words_cosines=np.zeros_like(cluster.cluster_content),
                 )
             )
 
