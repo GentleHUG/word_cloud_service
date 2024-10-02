@@ -73,7 +73,7 @@
 
 ## Использование
 
-...
+Загрузите список слов и получите облако слов.
 
 ## Благодарности
 
@@ -154,7 +154,7 @@ To run the service locally, follow these steps:
 
 ## Usage
 
-...
+Upload list of words, get word cloud.
 
 ## Acknowledgments
 
