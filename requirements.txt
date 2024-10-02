@@ -1,0 +1,13 @@
+spacy
+pymorphy3
+pyaspeller
+googletrans
+numpy
+umap-learn
+scikit-learn
+sentence_transformers
+flask
+wordcloud
+pillow
+en_core_web_sm
+pymorphy3-dicts-ru
