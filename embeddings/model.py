@@ -1,11 +1,13 @@
-import numpy as np
-from typing import Union, List
-from umap import UMAP
-from sklearn.cluster import HDBSCAN
-from sentence_transformers import SentenceTransformer
-from collections import Counter
-from embeddings.topwords_type import TopCluster
 import logging
+from collections import Counter
+from typing import List, Union
+
+import numpy as np
+from sentence_transformers import SentenceTransformer
+from sklearn.cluster import HDBSCAN
+from umap import UMAP
+
+from embeddings.topwords_type import TopCluster
 
 mts_values = [
     "партнерство",
