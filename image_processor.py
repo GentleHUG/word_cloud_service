@@ -60,6 +60,7 @@ class ImageProcessor:
 			mask=self.mask,
 			scale=1,
 			color_func=lambda x, **kwargs: ImageProcessor.grad_color(color_weights[x]),
+			prefer_horizontal=1
 		).generate_from_frequencies(words_and_weights)
 
 		image_path = f'static/{filename}.png'
