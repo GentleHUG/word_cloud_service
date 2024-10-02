@@ -1,6 +1,6 @@
 # NoIT: Сервис Облаков Слов (WCS)
 
-![Логотип Сервиса Облаков Слов](path/to/logo.png)
+![Визуализация работы](https://github.com/GentleHUG/word_cloud_service/blob/dev/images/gif.gif)
 
 ## Содержание
 
