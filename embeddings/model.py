@@ -172,15 +172,17 @@ class WordClusterizer:
         distances = []
 
         # Проходим по каждому вектору из reduced_mve
-        for vec_mve in reduced_mve:
+        for vec_twe in reduced_twe:
             # Проходим по каждому вектору из reduced_twe
-            for vec_twe in reduced_twe:
+            dist = []
+            for vec_mve in reduced_mve:
                 distance = self._cosine_distance(vec_mve, vec_twe)
                 distances.append(distance)
+            dist = np.array(dist)
+            mean_dist = np.mean(dist)
+            distances.append(mean_dist)
 
-        # Усредняем косинусные расстояния
-        average_distance = np.mean(distances)
-        return np.array(average_distance)
+        return np.array(distances)
 
     def _get_top_words(
         self,
@@ -235,7 +237,7 @@ class WordClusterizer:
                     cluster_id=int(cluster_id),
                     cluster_weight=cluster_weight,
                     cluster_content=list(cluster_words),
-                    overall_word_cosine=0
+                    overall_word_cosine=0,
                 )
             )
 
@@ -248,13 +250,13 @@ class WordClusterizer:
             else:
                 self.num_top_words = num_top_words
 
-        # Получение самых частых слов
-        word_counts = Counter(
-            [word for cluster in clusters_data for word in cluster.cluster_content]
-        )
-        _top_words = word_counts.most_common(max(1, self.num_top_words))
+        # # Получение самых частых слов
+        # word_counts = Counter(
+        #     [word for cluster in clusters_data for word in cluster.cluster_content]
+        # )
+        # _top_words = word_counts.most_common(max(1, self.num_top_words))
 
-        top_words = [word for word, _ in _top_words]
+        # top_words = [word for word, _ in _top_words]
 
         # self.weights = weights
         # self.top_words = np.array(top_words)
@@ -310,19 +312,20 @@ class WordClusterizer:
         # Получение косинусных расстояний
         logging.info("Getting cosines..")
         # Assuming _get_cosines can take a list of TopClusters and return corresponding cosines
-        cosines = self._get_cosines(
-            [cluster.cluster_content for cluster in top_clusters]
-        )
+        # cosines = self._get_cosines(
+        #     [cluster.cluster_content for cluster in top_clusters]
+        # )
 
         # Prepare the result with TopClusters instances
         result = []
         for cluster in top_clusters:
+            cosines = self._get_cosines(cluster.cluster_content)
             result.append(
                 TopClusters(
                     cluster_id=cluster.cluster_id,
                     cluster_weight=cluster.cluster_weight,
                     cluster_content=cluster.cluster_content,
-                    overall_word_cosine=0
+                    overall_word_cosine=cosines,
                 )
             )
 
