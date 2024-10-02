@@ -177,7 +177,7 @@ class WordClusterizer:
             dist = []
             for vec_mve in reduced_mve:
                 distance = self._cosine_distance(vec_mve, vec_twe)
-                distances.append(distance)
+                dist.append(distance)
             dist = np.array(dist)
             mean_dist = np.mean(dist)
             distances.append(mean_dist)
