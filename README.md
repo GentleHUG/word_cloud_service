@@ -1,6 +1,6 @@
 # NoIT: Сервис Облаков Слов (WCS)
 
-![Визуализация работы](https://github.com/GentleHUG/word_cloud_service/blob/dev/images/gif.gif)
+![Визуализация работы](https://github.com/GentleHUG/word_cloud_service/blob/dev/images/gif.gif?raw=true)
 
 ## Содержание
 
