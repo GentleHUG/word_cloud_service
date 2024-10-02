@@ -12,7 +12,12 @@ app = Flask(__name__)
 app.config["UPLOAD_FOLDER"] = CONFIG.UPLOAD_PATH
 app.config["MAX_CONTENT_LENGTH"] = 32 * 1024 * 1024  # 32 MB
 
-cont_proc = ContentProcessor(ru_words_path=CONFIG.RU_BANNED_WORDS_PATH, en_words_path=CONFIG.EN_BANNED_WORDS_PATH)
+assert os.getenv("GIGACHAT_TOKEN") is not None, "GIGACHAT_TOKEN not installed! Set it as env var!"
+cont_proc = ContentProcessor(
+	ru_words_path=CONFIG.RU_BANNED_WORDS_PATH,
+	en_words_path=CONFIG.EN_BANNED_WORDS_PATH,
+	gigachat_token=os.getenv("GIGACHAT_TOKEN")
+)
 image_proc = ImageProcessor(CONFIG.IMAGE_WIDTH, CONFIG.IMAGE_HEIGHT, CONFIG.EGG_SIZE)
 
 logging.basicConfig(level=logging.INFO, format='%(levelname)s: %(message)s')
@@ -45,11 +50,12 @@ def upload_file():
 		content = read_file_lines(filepath)
 		preprocessed = cont_proc.preprocess(content, enable_trans)
 		processed = cont_proc.process(preprocessed)
+		summarized = cont_proc.summarize(processed)
 
 		res = {top_cluster.cluster_content[0]: top_cluster.cluster_weight for top_cluster in processed}
 
-		image_path = image_proc.generate_word_cloud(res, file.filename)
-		json_path = create_json_file(res, file.filename)
+		image_path = image_proc.generate_word_cloud(summarized, file.filename)
+		json_path = create_json_file(summarized, file.filename)
 		print(json_path)
 		return render_template("wordcloud.html", image=image_path, json_filename=json_path)
 

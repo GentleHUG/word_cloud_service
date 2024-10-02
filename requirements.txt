@@ -11,3 +11,4 @@ wordcloud
 pillow
 en_core_web_sm
 pymorphy3-dicts-ru
+gigachat
