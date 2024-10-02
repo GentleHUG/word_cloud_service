@@ -1,18 +1,42 @@
 # TODO: Скопируй все библы
+# !python -m spacy download en_core_web_sm
+import re
+import pymorphy3 as pm
+# !pip install -U pymorphy3-dicts-ru
+from pymystem3 import Mystem
+# from ruwordnet import RuWordNet
+from pyaspeller import YandexSpeller
+from googletrans import Translator
+import spacy
+import numpy as np
+from typing import List
+import os
+# !pip install joblib
+from joblib import Parallel, delayed
+import logging
+
 class TextProcessor:
     def __init__(
         self, ru_words_path: str, en_words_path: str, enable_trans: bool = False
     ):
+        logging.info("Initializing data cleaner modules.")
+        logging.info("Loading ru_bwords.")
         self.ru_bwords = self.read_file_as_set(
             ru_words_path
         )  # Set of Russian bad words
+        logging.info("Loading en_bwords.")
         self.en_bwords = self.read_file_as_set(
             en_words_path
         )  # Set of English bad words
+        logging.info("Loading ru_morph.")
         self.ru_morph = Mystem()  # Morphological analyzer for Russian
+        logging.info("Loading en_morph.")
         self.en_morph = spacy.load("en_core_web_sm")  # English NLP model
+        logging.info("Loading translator.")
         self.translator = Translator()  # Translator for language translation
+        logging.info("Loading speller.")
         self.speller = YandexSpeller()  # Spelling checker
+        logging.info("Loading morph.")
         self.morph = pm.MorphAnalyzer(lang="ru")
         self.enable_trans = enable_trans
 
@@ -119,6 +143,8 @@ class TextProcessor:
         """
         Processes a list of answers by cleaning and filtering them.
         """
+        logging.info("Filtering text.")
         results = np.array([self.clean_answer(answer) for answer in np.array(answers)])
+        logging.info("Filtering None results.")
         results = results[results != np.array(None)]  # Filter out None results
         return results
