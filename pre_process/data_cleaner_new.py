@@ -1,17 +1,15 @@
 # TODO: Скопируй все библы
+import spacy
 # !python -m spacy download en_core_web_sm
 import re
 import pymorphy3 as pm
 # !pip install -U pymorphy3-dicts-ru
-from pymystem3 import Mystem
-# from ruwordnet import RuWordNet
 from pyaspeller import YandexSpeller
 from googletrans import Translator
-import spacy
 import numpy as np
 from typing import List
 import os
-# !pip install joblib
+import itertools
 from joblib import Parallel, delayed
 import logging
 
@@ -66,85 +64,62 @@ class TextProcessor:
         """
         Cleans and processes the input text by correcting grammar, translating words, and filtering out bad words.
         """
-        text = self.fixed_grammar(text)
 
         en_text = re.sub(r"[^A-Za-z ]+", "", text).strip()
+        en_trans_text = []
         if en_text:
             en_text = [token.lemma_.lower() for token in self.en_morph(en_text)]
             if self.enable_trans:
-                en_text = [self.translate(item) for item in en_text]
-                en_text = [item for item in en_text if item not in self.ru_bwords]
+                en_trans_text = [self.translate(item) for item in en_text]
+                en_text = []
             else:
                 en_text = [item for item in en_text if item not in self.en_bwords]
-        en_text = " ".join(en_text).strip()
+        else:
+            en_text = []
 
-        ru_text = re.sub(r"[^А-Яа-я ]+", "", text).split()
+        ru_text = (re.sub(r"[^А-Яа-я ]+", " ", text).split() + en_trans_text)[::-1]
+        
         if ru_text:
             for ind, item in enumerate(ru_text):
                 p = self.morph.parse(item)[0]
-                norma = self.morph.parse(p.normal_form)[0]
-                if norma.word not in self.ru_bwords:
-                    pos, case, gender, number = (
-                        p.tag.POS,
-                        p.tag.case,
-                        p.tag.gender,
-                        p.tag.number,
-                    )
-                    if (case, number) == ("gent", "sing") and pos == "NOUN":
-                        try:
-                            ru_text[ind] = norma.inflect({"plur", "nomn"}).word
-                        except AttributeError:
-                            ru_text[ind] = item
-                    elif pos == "NOUN":
-                        if number == "plur":
-                            ru_text[ind] = norma.inflect({"plur", "nomn"}).word
-                        else:
-                            ru_text[ind] = norma.inflect({"sing", "nomn"}).word
-                    elif pos == "ADJF":
-                        if ind + 1 < len(ru_text):
-                            p_next = self.morph.parse(ru_text[ind + 1])[0]
-                            norma_next = self.morph.parse(p.normal_form)[0]
-                            pos_next, case_next, gender_next, number_next = (
-                                p_next.tag.POS,
-                                p_next.tag.case,
-                                p_next.tag.gender,
-                                p_next.tag.number,
-                            )
-                            if pos_next == "NOUN":
-                                if number_next == "plur":
-                                    ru_text[ind] = norma.inflect(
-                                        {number_next, "nomn"}
-                                    ).word
-                                else:
-                                    if (case_next, number_next) == ("gent", "sing"):
-                                        ru_text[ind] = norma.inflect(
-                                            {"plur", "nomn"}
-                                        ).word
-                                    else:
-                                        ru_text[ind] = norma.inflect(
-                                            {number_next, gender_next, "nomn"}
-                                        ).word
-                            else:
-                                ru_text[ind] = norma.word
-                        else:
-                            ru_text[ind] = norma.word
-                    else:
-                        ru_text[ind] = norma.word
+                if (item or p.normal_form) not in self.ru_bwords:
+                      pos = p.tag.POS
+                      if pos == 'NOUN':
+                          case, number = (p.tag.case, p.tag.number)
+                          if (case, number) == ("gent", "sing") or number == "plur":
+                              ru_text[ind] = p.inflect({"plur", "nomn"}).word
+                          else:
+                              ru_text[ind] = p.normal_form
+                      elif pos == 'ADJF':
+                          gender, number = (p.tag.gender, p.tag.number)
+                          if ind != 0:
+                              p_prev = self.morph.parse(ru_text[ind - 1])[0]
+                              pos_prev = p_prev.tag.POS
+                              if pos_prev == 'NOUN':
+                                  if number == 'plur':
+                                      ru_text[ind - 1] = p.inflect({"plur", "nomn"}).word + ' ' + ru_text[ind - 1]
+                                  else:
+                                      ru_text[ind - 1] = p.inflect({number, gender, "nomn"}).word + ' ' + ru_text[ind - 1]
+                                  ru_text[ind] = ''
+                              else:
+                                  ru_text[ind] = p.normal_form
+                          else:
+                              ru_text[ind] = p.normal_form
+                      else:
+                          ru_text[ind] = p.normal_form
                 else:
                     ru_text[ind] = ""
 
-        ru_text = re.sub(r"\s+", " ", " ".join(ru_text))
-        clean_answer = " ".join([ru_text, en_text]).strip()
-        if clean_answer != "":
-            return clean_answer
-        return None
+        ru_text = [item for item in ru_text[::-1] if item]
+        return en_text + ru_text
 
     def forward(self, answers) -> np.ndarray:
         """
         Processes a list of answers by cleaning and filtering them.
         """
-        logging.info("Filtering text.")
-        results = np.array([self.clean_answer(answer) for answer in np.array(answers)])
-        logging.info("Filtering None results.")
-        results = results[results != np.array(None)]  # Filter out None results
-        return results
+        logging.info("Fixing grammar in answers.")
+        fixed_grammar_answers = [self.fixed_grammar(answer) for answer in answers]
+        logging.info("Getting normalized form of answers.")
+        results = [self.clean_answer(answer) for answer in fixed_grammar_answers]
+        return np.array(list(itertools.chain.from_iterable(results)))
+        
