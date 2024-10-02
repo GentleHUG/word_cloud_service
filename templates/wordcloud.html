@@ -35,21 +35,7 @@
             color: #333;
             margin-top: 20px;
         }
-
-        pre {
-            background-color: white;
-            border: 1px solid #ddd;
-            border-radius: 4px;
-            padding: 20px;
-            width: 80%;
-            max-width: 600px;
-            overflow: visible; /* Убираем прокрутку */
-            white-space: pre-wrap; /* Позволяет переносить длинные строки */
-            word-wrap: break-word; /* Позволяет переносить слова */
-            margin-top: 10px;
-        }
-
-        a {
+        a, button {
             display: inline-block;
             margin-top: 20px;
             background-color: #ff0032; /* Красный цвет */
@@ -58,9 +44,14 @@
             border-radius: 4px;
             text-decoration: none;
             transition: background-color 0.3s ease;
+            border: none;
+            cursor: pointer;
+            font-size: 1rem; /* Размер шрифта */
+            width: 200px; /* Фиксированная ширина для кнопок */
+            text-align: center; /* Центрирование текста */
         }
 
-        a:hover {
+        a:hover, button:hover {
             background-color: #d2002b; /* Темнее красного при наведении */
         }
     </style>
@@ -68,8 +59,10 @@
 <body>
     <h1>Долгожданное облако слов</h1>
     <img src="{{ image }}" alt="Wordcloud">
-    <h2>Агрегированные слова с их количеством (JSON Data):</h2>
-    <pre>{{ json_data }}</pre>
-    <a href="/">Загрузить другой файл</a>
+
+    <!-- Кнопка для скачивания JSON файла -->
+    <a href="/path/to/your/file.json" download="data.json" class="download-button">Скачать JSON файл</a>
+
+    <a href="/" class="link-button">Загрузить другой файл</a>
 </body>
 </html>

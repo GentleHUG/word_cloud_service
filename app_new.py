@@ -2,6 +2,7 @@ import os
 from flask import Flask, request, render_template, redirect, url_for
 from file_processor import read_file_lines
 from content_processor_new import ContentProcessor
+from image_processor import ImageProcessor
 import CONFIG
 import logging
 
@@ -9,10 +10,8 @@ app = Flask(__name__)
 app.config["UPLOAD_FOLDER"] = "uploads/"
 app.config["MAX_CONTENT_LENGTH"] = 32 * 1024 * 1024  # 32 MB
 
-# TODO: дописать импорт для этого и разнести по папкам
-# TODO: дописать параметры, которые нужно получать классу, а именно:
-# def __init__(self, ru_words_path: str, en_words_path: str, enable_trans: bool = False):
-cont_proc = ContentProcessor(...)
+cont_proc = ContentProcessor(ru_words_path=CONFIG.RU_BANNED_WORDS_PATH, en_words_path=CONFIG.EN_BANNED_WORDS_PATH)
+image_proc = ImageProcessor(CONFIG.IMAGE_WIDTH, CONFIG.IMAGE_HEIGHT)
 
 logging.basicConfig(level=logging.INFO, format='%(levelname)s: %(message)s')
 
@@ -45,7 +44,9 @@ def upload_file():
         # image_path, json_data = process_content(content, file.filename)
         # TODO: прописать аргументы
         preprocessed = cont_proc.preprocess(content)
-        result = cont_proc.process(preprocessed)  # TODO: отсюда возвращается JSON надо развернуть Андрей
+        processed = cont_proc.process(preprocessed)  # TODO: отсюда возвращается JSON надо развернуть Андрей
+
+        image_path = image_proc.generate_word_cloud(processed, file.filename)
 
         return render_template("wordcloud.html", image=image_path, json_data=json_data)
 

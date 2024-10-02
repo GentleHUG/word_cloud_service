@@ -1,5 +1,5 @@
 # TODO: Добписать импорты
-from typing import Union
+from typing import Union, List
 import numpy as np
 from embeddings.model import WordClusterizer    
 from pre_process.data_cleaner_new import TextProcessor
