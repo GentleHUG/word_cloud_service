@@ -44,6 +44,7 @@ class TextProcessor:
         """
         Translates a word from English to Russian.
         """
+        print(word, type(word))
         return self.translator.translate(word, src="en", dest="ru").text
 
     def clean_answer(self, text: str, enable_trans: bool) -> str:

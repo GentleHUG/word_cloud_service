@@ -50,12 +50,16 @@ def upload_file():
 		content = read_file_lines(filepath)
 		preprocessed = cont_proc.preprocess(content, enable_trans)
 		processed = cont_proc.process(preprocessed)
-		summarized = cont_proc.summarize(processed)
+		# summarized = cont_proc.summarize(processed)
 
-		res = {top_cluster.cluster_content[0]: top_cluster.cluster_weight for top_cluster in processed}
+		res = {}
+		for top_cluster in processed:
+			for word in top_cluster.cluster_content[0: (len(top_cluster.cluster_content) if len(top_cluster.cluster_content) < 5 else 1)]:
+				res[word] = top_cluster.cluster_weight
+		# res = {top_cluster.cluster_content[0: (3 if len(top_cluster.cluster_content) > 3 else 1)]: top_cluster.cluster_weight for top_cluster in processed}
 
-		image_path = image_proc.generate_word_cloud(summarized, file.filename)
-		json_path = create_json_file(summarized, file.filename)
+		image_path = image_proc.generate_word_cloud(res, file.filename)
+		json_path = create_json_file(res, file.filename)
 		print(json_path)
 		return render_template("wordcloud.html", image=image_path, json_filename=json_path)
 

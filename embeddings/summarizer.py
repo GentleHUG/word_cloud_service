@@ -30,4 +30,4 @@ class Summarizer:
                 for words in clusters_and_words
             ]
 
-print(Summarizer("").summarize([["деньги", "деньги"]]))
+# print(Summarizer("").summarize([["деньги", "деньги"]]))
