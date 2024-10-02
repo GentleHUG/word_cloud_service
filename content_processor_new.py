@@ -25,5 +25,5 @@ class ContentProcessor:
         result = self.process_model.forward(input)
         return result
 
-    def summarize(self, clusters: List[TopClusters]) -> Dict[str: float]:
-        return {self.summarizer(cluster.cluster_content): cluster.cluster_weight for cluster in clusters}
+    def summarize(self, clusters: List[TopClusters]) -> Dict[str, float]:
+        return {self.summarizer.summarize(cluster.cluster_content): cluster.cluster_weight for cluster in clusters}
