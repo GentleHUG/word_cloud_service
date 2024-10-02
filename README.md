@@ -74,10 +74,6 @@
 
 ...
 
-## Лицензия
-
-Проект разработан под лицензией MIT. Подробности смотрите в файле LICENSE.md.
-
 ## Благодарности
 
 - Мы выражаем благодарность организаторам за проведение этого замечательного мероприятия.
@@ -155,27 +151,7 @@ To run the service locally, follow these steps:
 
 ## Usage
 
-To use the Word Cloud Service, simply input your text data into the provided interface. The service will process the input and generate a visually appealing word cloud based on the most significant terms. You can customize the appearance and download the final output as an image.
-
-## API Documentation
-
-For developers interested in integrating with our service, detailed API documentation is available. It includes endpoints, request/response formats, and examples to help you get started.
-
-## Contributing
-
-We welcome contributions from the community! If you would like to contribute to the project, please follow these steps:
-
-1. Fork the repository.
-2. Create a new branch for your feature or bug fix.
-3. Make your changes and commit them.
-4. Push your branch to your forked repository.
-5. Submit a pull request.
-
-Please ensure that your code adheres to our coding standards and includes appropriate tests.
-
-## License
-
-This project is licensed under the MIT License. See the LICENSE.md file for more details.
+...
 
 ## Acknowledgments
 
