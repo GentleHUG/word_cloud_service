@@ -26,16 +26,14 @@ class TextProcessor:
         self.en_bwords = self.read_file_as_set(
             en_words_path
         )  # Set of English bad words
-        logging.info("Loading ru_morph.")
-        self.ru_morph = Mystem()  # Morphological analyzer for Russian
         logging.info("Loading en_morph.")
         self.en_morph = spacy.load("en_core_web_sm")  # English NLP model
         logging.info("Loading translator.")
         self.translator = Translator()  # Translator for language translation
         logging.info("Loading speller.")
         self.speller = YandexSpeller()  # Spelling checker
-        logging.info("Loading morph.")
-        self.morph = pm.MorphAnalyzer(lang="ru")
+        logging.info("Loading ru_morph.")
+        self.morph = pm.MorphAnalyzer(lang="ru") # Morphological analyzer for Russian
         self.enable_trans = enable_trans
 
     def read_file_as_set(self, file_path: str) -> set:
