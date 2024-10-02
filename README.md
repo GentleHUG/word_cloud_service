@@ -83,8 +83,6 @@
 
 # NoIT: Word Cloud Service (WCS) Project
 
-![Word Cloud Service Logo](path/to/logo.png)
-
 ## Table of Contents
 
 - [Introduction](#introduction)
