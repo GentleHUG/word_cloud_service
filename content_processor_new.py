@@ -3,7 +3,7 @@ from typing import Union, List, Dict
 import numpy as np
 from embeddings.model import WordClusterizer    
 from pre_process.data_cleaner_new import TextProcessor
-from embeddings.topwords_type import TopClusters
+from embeddings.topwords_type import TopCluster
 from embeddings.summarizer import Summarizer
 import logging
 
@@ -20,10 +20,10 @@ class ContentProcessor:
         result = self.preprocess_model.forward(input, enable_trans, enable_grammar)
         return result
 
-    def process(self, input: np.ndarray, num_top_words: Union[int, str] = "auto") -> List[TopClusters]:
+    def process(self, input: np.ndarray, num_top_words: Union[int, str] = "auto") -> List[TopCluster]:
         logging.info("Processing data")
-        result = self.process_model.forward(input)
+        result = self.process_model.forward(input, num_top_words)
         return result
 
-    def summarize(self, clusters: List[TopClusters]) -> Dict[str, float]:
+    def summarize(self, clusters: List[TopCluster]) -> Dict[str, float]:
         return {self.summarizer.summarize(cluster.cluster_content): cluster.cluster_weight for cluster in clusters}

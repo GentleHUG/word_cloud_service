@@ -6,6 +6,9 @@ from PIL import Image, ImageDraw
 from wordcloud import WordCloud
 
 
+color1 = (255, 0, 50)
+color2 = (0, 0, 0)
+
 class ImageProcessor:
 	def _create_egg_mask(self, width: int, height: int, egg_size: int) -> np.ndarray:
 		mask = Image.new("L", (width, height), 'white')
@@ -35,26 +38,25 @@ class ImageProcessor:
 		self.mask = self._create_egg_mask(self.width, self.height, egg_size)
 
 	# функция находит цвет на палитре градиента от одного цвета к другому со степенью alpha
-	def grad_color(self, alpha: float, color1 = (255, 0, 50), color2 = (0, 0, 0)):
+	@staticmethod
+	def grad_color(alpha: float, color1 = (255, 0, 50), color2 = (0, 0, 0)):
 		r = int(color1[0] + (color2[0] - color1[0]) * alpha)
 		g = int(color1[1] + (color2[1] - color1[1]) * alpha)
 		b = int(color1[2] + (color2[2] - color1[2]) * alpha)
 		return "#{:02x}{:02x}{:02x}".format(r, g, b)
 
 	#подаем массив с косинусными расстояниями до всех слов-'ценностей', получаем массив цветов
-	def сosine_distances_to_color (self, array, color1 = (255, 0, 50), color2 = (0, 0, 0)):
-		norm_value = max(array) - min(array)
-		alpha = (array -  min(array)) / norm_value
-		return [self.grad_color(t, color1, color2) for t in alpha]
 
-	def generate_word_cloud(self, words_and_weights: Dict[str, float], filename: str) -> str:
+	def generate_word_cloud(self, words_and_weights: Dict[str, float], color_weights: Dict[str, float], filename: str) -> str:
+		norm = max(color_weights.values()) / min(color_weights.values())
+
 		wordcloud = WordCloud(
 			width=self.width,
 			height=self.height,
 			background_color=self.background_color,
 			mask=self.mask,
 			scale=1,
-			color_func=lambda *args, **kwargs: self.base_text_color,
+			color_func=lambda x, **kwargs: ImageProcessor.grad_color(color_weights[x] / norm),
 		).generate_from_frequencies(words_and_weights)
 
 		image_path = f'static/{filename}.png'

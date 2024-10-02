@@ -4,7 +4,7 @@ from umap import UMAP
 from sklearn.cluster import HDBSCAN
 from sentence_transformers import SentenceTransformer
 from collections import Counter
-from embeddings.topwords_type import TopClusters
+from embeddings.topwords_type import TopCluster
 import logging
 
 mts_values = [
@@ -233,11 +233,11 @@ class WordClusterizer:
 
             # Создание экземпляра TopClusters
             clusters_data.append(
-                TopClusters(
+                TopCluster(
                     cluster_id=int(cluster_id),
                     cluster_weight=cluster_weight,
                     cluster_content=list(cluster_words),
-                    overall_word_cosine=0,
+                    words_cosines=0,
                 )
             )
 
@@ -265,7 +265,7 @@ class WordClusterizer:
 
     def forward_old(
         self, words: np.ndarray, num_top_words: Union[int, str] = "auto"
-    ) -> List[TopClusters]:
+    ) -> List[TopCluster]:
         """
         Основной метод для обработки списка слов, кластеризации и получения топ-слов.
 
@@ -285,7 +285,7 @@ class WordClusterizer:
         logging.info("Getting cosines..")
         cosines = self._get_cosines(top_words)
         result = []
-        return TopClusters(
+        return TopCluster(
             words_list=top_words.astype(np.str_),
             weights=weights,
             cosines=cosines,
@@ -293,7 +293,7 @@ class WordClusterizer:
 
     def forward(
         self, words: np.ndarray, num_top_words: Union[int, str] = "auto"
-    ) -> List[TopClusters]:
+    ) -> List[TopCluster]:
         """
         Основной метод для обработки списка слов, кластеризации и получения топ-слов.
 
@@ -321,11 +321,11 @@ class WordClusterizer:
         for cluster in top_clusters:
             cosines = self._get_cosines(cluster.cluster_content)
             result.append(
-                TopClusters(
+                TopCluster(
                     cluster_id=cluster.cluster_id,
                     cluster_weight=cluster.cluster_weight,
                     cluster_content=cluster.cluster_content,
-                    overall_word_cosine=cosines,
+                    words_cosines=cosines,
                 )
             )
 
