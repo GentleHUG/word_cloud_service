@@ -222,12 +222,12 @@ class WordClusterizer:
         total_elements = sum(count for _, count in top_clusters)
 
         # Получение слов из самых больших кластеров
-        weights = {}
+        # weights = []
         clusters_data = []
         for cluster_id, count in top_clusters:
             cluster_words = together[together[:, 0] == str(cluster_id)][:, 1]
             cluster_weight = count / total_elements if total_elements > 0 else 0
-            weights[int(cluster_id)] = cluster_weight
+            # weights.append(cluster_weight)
 
             # Создание экземпляра TopClusters
             clusters_data.append(
@@ -255,8 +255,8 @@ class WordClusterizer:
 
         top_words = [word for word, _ in _top_words]
 
-        self.weights = weights
-        self.top_words = np.array(top_words)
+        # self.weights = weights
+        # self.top_words = np.array(top_words)
 
         return clusters_data
 
@@ -305,8 +305,6 @@ class WordClusterizer:
         # Получение топ-слов и их весов
         logging.info("Getting top words.")
         top_clusters = self._get_top_words(clustered_words, num_top_words=num_top_words)
-
-        # TODO: Сделать для Юли возврат слов с разделением по кластерам и пофиксить названия в кластерах при передаче весов
 
         # Получение косинусных расстояний
         logging.info("Getting cosines..")
