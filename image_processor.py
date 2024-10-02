@@ -34,19 +34,19 @@ class ImageProcessor:
 		self.background_color = background_color
 		self.mask = self._create_egg_mask(self.width, self.height, egg_size)
 
-	#функция находит цвет на палитре градиента от одного цвета к другому со степенью alpha
-	# def grad_color(self, color1 = (255, 0, 50), color2 = (0, 0, 0), alpha: float):
-	# 	r = int(color1[0] + (color2[0] - color1[0]) * alpha)
-	# 	g = int(color1[1] + (color2[1] - color1[1]) * alpha)
-	# 	b = int(color1[2] + (color2[2] - color1[2]) * alpha)
-	# 	return "#{:02x}{:02x}{:02x}".format(r, g, b)
-	#
-	# #подаем массив с косинусными расстояниями до всех слов-'ценностей', получаем массив цветов
-	# def сosine_distances_to_color (self, array, color1 = (255, 0, 50), color2 = (0, 0, 0)):
-	# 	  norm_value = max(array) - min(array)
-	# 	  alpha = (array -  min(array)) / norm_value
-	# 	  return [grad_color (color1, color2, t) for t in alpha]
-		
+	# функция находит цвет на палитре градиента от одного цвета к другому со степенью alpha
+	def grad_color(self, alpha: float, color1 = (255, 0, 50), color2 = (0, 0, 0)):
+		r = int(color1[0] + (color2[0] - color1[0]) * alpha)
+		g = int(color1[1] + (color2[1] - color1[1]) * alpha)
+		b = int(color1[2] + (color2[2] - color1[2]) * alpha)
+		return "#{:02x}{:02x}{:02x}".format(r, g, b)
+
+	#подаем массив с косинусными расстояниями до всех слов-'ценностей', получаем массив цветов
+	def сosine_distances_to_color (self, array, color1 = (255, 0, 50), color2 = (0, 0, 0)):
+		norm_value = max(array) - min(array)
+		alpha = (array -  min(array)) / norm_value
+		return [self.grad_color(t, color1, color2) for t in alpha]
+
 	def generate_word_cloud(self, words_and_weights: Dict[str, float], filename: str) -> str:
 		wordcloud = WordCloud(
 			width=self.width,

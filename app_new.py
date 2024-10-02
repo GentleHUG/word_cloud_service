@@ -38,6 +38,7 @@ def upload_file():
 		return redirect(url_for("index"))
 
 	enable_trans = request.form.get("enable_trans")
+	enable_grammar = request.form.get("enable_grammar")
 
 	file = request.files["file"]
 	if file.filename == "":
@@ -48,7 +49,7 @@ def upload_file():
 		file.save(filepath)
 
 		content = read_file_lines(filepath)
-		preprocessed = cont_proc.preprocess(content, enable_trans)
+		preprocessed = cont_proc.preprocess(content, enable_trans, enable_grammar)
 		processed = cont_proc.process(preprocessed)
 		# summarized = cont_proc.summarize(processed)
 

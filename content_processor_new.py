@@ -15,9 +15,9 @@ class ContentProcessor:
         self.preprocess_model = TextProcessor(ru_words_path, en_words_path)
         self.summarizer = Summarizer(gigachat_token)
 
-    def preprocess(self, input: np.ndarray, enable_trans: bool) -> np.ndarray:
+    def preprocess(self, input: np.ndarray, enable_trans: bool, enable_grammar: bool) -> np.ndarray:
         logging.info("Preprocessing data.")
-        result = self.preprocess_model.forward(input, enable_trans)
+        result = self.preprocess_model.forward(input, enable_trans, enable_grammar)
         return result
 
     def process(self, input: np.ndarray, num_top_words: Union[int, str] = "auto") -> List[TopClusters]:

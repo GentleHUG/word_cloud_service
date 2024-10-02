@@ -93,7 +93,7 @@ class TextProcessor:
         ru_text = [item for item in ru_text[::-1] if item]
         return en_text + ru_text
 
-    def forward(self, answers: np.ndarray, enable_trans: bool = False, enable_grammarer: bool = False) -> np.ndarray:
+    def forward(self, answers: np.ndarray, enable_trans: bool = False, enable_grammar: bool = False) -> np.ndarray:
         """
         Processes a list of answers by cleaning and filtering them.
         """
@@ -107,7 +107,7 @@ class TextProcessor:
             speller = YandexSpeller()
             return speller.spelled(text)
 
-        if enable_grammarer:
+        if enable_grammar:
             logging.info("Fixing grammar in answers.")
             self.data = Parallel(n_jobs=-1)(delayed(grammar)(item) for item in self.data)
 
