@@ -35,8 +35,8 @@ class Topwords:
 
 # TODO: доделать тип данных
 @dataclass
-class TopClusters:
+class TopCluster:
     cluster_id: int
     cluster_weight: int
     cluster_content: List[str]
-    overall_word_cosine: float
+    words_cosines: np.ndarray
