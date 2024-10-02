@@ -39,6 +39,7 @@
   - RuBERT
   - Pymorphy
   - SpaCy
+  - HDBSCAN
 
 ## Состав команды
 
@@ -60,6 +61,7 @@
 2. **Установите зависимости**:
    ```bash
    pip install -r requirements.txt
+   python -m spacy download en_core_web_sm
    ```
 
 3. **Запустите приложение**:
@@ -122,6 +124,7 @@ Welcome to the **Word Cloud Service (WCS)** project by the NoIT team! This proje
   - RuBERT
   - Pymorphy
   - SpaCy
+  - HDBSCAN
 
 ## Team Members
 
@@ -143,6 +146,7 @@ To run the service locally, follow these steps:
 2. **Install dependencies**:
    ```bash
    pip install -r requirements.txt
+   python -m spacy download en_core_web_sm
    ```
 
 3. **Run the application**:
