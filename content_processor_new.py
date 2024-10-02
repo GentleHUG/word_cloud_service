@@ -1,4 +1,3 @@
-# TODO: Добписать импорты
 from typing import Union, List, Dict
 import numpy as np
 from embeddings.model import WordClusterizer    
@@ -8,7 +7,6 @@ from embeddings.summarizer import Summarizer
 import logging
 
 class ContentProcessor:
-    # TODO: дописать сюда в инит Леша тебе импорты которые нужны твоему классу вместо 3 точек
     def __init__(self, ru_words_path: str, en_words_path: str, gigachat_token: str):
         logging.info("Initializing WordClustreizer() class.")
         self.process_model = WordClusterizer()

@@ -33,7 +33,6 @@ class Topwords:
     weights: Dict[int, float]
     cosines: np.ndarray
 
-# TODO: доделать тип данных
 @dataclass
 class TopCluster:
     cluster_id: int
